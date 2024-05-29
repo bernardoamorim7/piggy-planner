@@ -1,0 +1,52 @@
+package web
+
+import (
+	"piggy-planner/cmd/web/icons"
+)
+
+templ Login() {
+	<!DOCTYPE html>
+	<html lang="en" data-theme="nord">
+		<head>
+			<meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/>
+			<title>Piggy Planner - Login</title>
+			<meta name="keywords" content="Piggy Planner Login"/>
+			<meta name="description" content="Piggy Planner Login"/>
+			<meta name="author" content="Piggy Planner"/>
+			<link rel="shortcut icon" href="assets/imgs/favicon.ico" type="image/x-icon"/>
+			<link rel="apple-touch-icon" href="assets/imgs/favicon.png"/>
+			<link rel="stylesheet" href="assets/css/tailwind.css"/>
+			<script src="assets/js/htmx.min.js"></script>
+			<script src="assets/js/response-targets.js"></script>
+		</head>
+		<body class="grid min-h-screen w-screen place-items-center bg-cover">
+			<main class="card lg:card-side bg-base-200 shadow-xl">
+				<figure class="w-60 h-60 m-2 mt-16" aria-label="Piggy Planner logo">
+					@icons.Piggy()
+				</figure>
+				<div class="card-body" id="form">
+					<h3 class="card-title text-center text-2xl font-bold">Piggy Planner</h3>
+					<form class="flex flex-col items-stretch" hx-post="/login" hx-trigger="submit" hx-swap="innerHTML" hx-ext="response-targets" hx-target-error="#err">
+						<div class="flex flex-row items-center justify-center">
+							<figure class="w-8 h-8 mr-2" aria-label="E-mail">
+								@icons.Mail()
+							</figure>
+							<input class="input input-bordered shadow-lg" type="email" name="email" id="email" placeholder="E-mail" required/>
+						</div>
+						<div class="my-2"></div>
+						<div class="flex flex-row items-center justify-center">
+							<figure class="w-8 h-8 mr-2" aria-label="Password">
+								@icons.Password()
+							</figure>
+							<input class="input input-bordered shadow-lg" type="password" name="password" id="password" placeholder="Password" required/>
+						</div>
+						<button class="btn btn-primary mt-4" type="submit" name="login" id="login">Login</button>
+						<p class="text-center my-4 text-error h-4 max-w-64 break-all" id="err"></p>
+					</form>
+					<div class="my-2"></div>
+				</div>
+			</main>
+			<p class="mt-[-32rem]">Don't have an account yet? <a href="/register" class="text-primary">Register here!</a></p>
+		</body>
+	</html>
+}

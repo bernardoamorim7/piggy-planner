@@ -1,0 +1,16 @@
+package components
+
+import (
+	"time"
+	"fmt"
+)
+
+var currentYear string = fmt.Sprintf("%d", time.Now().Year())
+
+templ Footer() {
+	<footer class="footer footer-center p-4 bg-base-300 text-base-content">
+		<aside>
+			<p>Copyright © { currentYear } - All right reserved by Piggy Planner</p>
+		</aside>
+	</footer>
+}

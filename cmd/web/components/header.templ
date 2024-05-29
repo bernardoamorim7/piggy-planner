@@ -1,0 +1,22 @@
+package components
+
+import "piggy-planner/cmd/web/icons"
+
+templ Header() {
+	<header class="navbar bg-base-100">
+		<div class="flex-1">
+			<a class="btn btn-ghost text-xl">
+				@icons.Piggy()
+				Piggy Planner
+			</a>
+		</div>
+		<div class="flex-none">
+			<a class="btn btn-primary" href="/login">
+				Login
+			</a>
+			<a href="https://github.com/bernardoamorim7/piggy-planner" target="_blank">
+				@icons.Github()
+			</a>
+		</div>
+	</header>
+}

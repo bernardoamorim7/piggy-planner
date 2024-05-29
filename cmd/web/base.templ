@@ -1,0 +1,27 @@
+package web
+
+import (
+	"piggy-planner/cmd/web/components"
+)
+
+templ Base() {
+	<!DOCTYPE html>
+	<html lang="en" data-theme="nord">
+		<head>
+			<meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/>
+			<title>Piggy Planner</title>
+			<meta name="keywords" content="Piggy Planner"/>
+			<meta name="description" content="Piggy Planner"/>
+			<meta name="author" content="Piggy Planner"/>
+			<link rel="shortcut icon" href="assets/imgs/favicon.ico" type="image/x-icon"/>
+			<link rel="apple-touch-icon" href="assets/imgs/favicon.png"/>
+			<link rel="stylesheet" href="assets/css/tailwind.css"/>
+			<script src="assets/js/htmx.min.js"></script>
+		</head>
+		<body>
+			@components.Header()
+			@Index()
+			@components.Footer()
+		</body>
+	</html>
+}
