@@ -9,6 +9,12 @@ build:
 	@echo "Building..."
 	@templ generate
 	@npx tailwindcss build -o ./cmd/web/assets/css/tailwind.css --minify
+	@go build -o main cmd/api/main.go 
+
+build-release:
+	@echo "Building..."
+	@templ generate
+	@npx tailwindcss build -o ./cmd/web/assets/css/tailwind.css --minify
 	@go build -ldflags="-s -w" -o main cmd/api/main.go 
 
 # Run the application

@@ -14,14 +14,16 @@ type User struct {
 	Name     string // Name of the user
 	Email    string // Email address of the user
 	Password string // Hashed password of the user
+	Avatar   string // URL of Dicebear's API generated avatar
 }
 
 // NewUser creates a new user.
-func NewUser(name, email, password string) *User {
+func NewUser(name, email, password, avatar string) *User {
 	return &User{
 		Name:     name,
 		Email:    email,
 		Password: password,
+		Avatar:   avatar,
 	}
 }
 
@@ -74,15 +76,11 @@ func ValidateEmail(email string) bool {
 
 // ValidatePassword validates a password.
 func ValidatePassword(password string) bool {
-	password = strings.TrimSpace(password)
-
 	return len(password) >= 8
 }
 
 // ValidateName validates a name.
 func ValidateName(name string) bool {
-	name = strings.TrimSpace(name)
-
 	if len(name) < 1 || len(name) > 255 {
 		return false
 	}

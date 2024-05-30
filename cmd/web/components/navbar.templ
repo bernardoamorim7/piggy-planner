@@ -1,8 +1,11 @@
 package components
 
-import "piggy-planner/cmd/web/icons"
+import (
+	"piggy-planner/cmd/web/icons"
+	"github.com/labstack/echo/v4"
+)
 
-templ Navbar() {
+templ Navbar(c echo.Context) {
 	<navbar class="navbar bg-base-100">
 		<div class="navbar-start">
 			<div class="dropdown">
@@ -42,9 +45,9 @@ templ Navbar() {
 			</ul>
 		</div>
 		<div class="navbar-end">
-			<a href="/login" class="btn btn-primary">Login</a>
-			<div class="mx-2"></div>
-			<a href="/register" class="btn btn-primary">Register</a>
+			<button class="avatar w-16 h-16" hx-get="/profile" hx-target="#main">
+				<img src={ c.Get("avatar").(string) } alt={ c.Get("name").(string) + "'s avatar" } class="rounded-full"/>
+			</button>
 		</div>
 	</navbar>
 }

@@ -7,6 +7,7 @@ import (
 	"piggy-planner/cmd/web"
 	"piggy-planner/cmd/web/views"
 
+	"piggy-planner/internal/middlewares"
 	"piggy-planner/internal/server/handlers"
 	"piggy-planner/internal/utils"
 
@@ -31,17 +32,19 @@ func (s *Server) RegisterRoutes() http.Handler {
 	// Health check
 	e.GET("/health", s.healthHandler, utils.IsLocalhost)
 
-	// Index
-	e.GET("/", echo.WrapHandler(templ.Handler(web.Base())))
-
 	// Auth
-	e.GET("/login", echo.WrapHandler(templ.Handler(web.Login())))
+	e.GET("/login", echo.WrapHandler(templ.Handler(web.Login())), middlewares.RedirectIfLoggedIn)
 	e.POST("/login", handlers.Login)
-	e.GET("/register", echo.WrapHandler(templ.Handler(web.Register())))
+	e.GET("/register", echo.WrapHandler(templ.Handler(web.Register())), middlewares.RedirectIfLoggedIn)
 	e.POST("/register", handlers.Register)
 
-	// Dashboard
-	e.GET("/dashboard", echo.WrapHandler(templ.Handler(views.Dashboard())), handlers.Protected())
+	// Index
+	e.GET("/", middlewares.GetSessionVars(func(c echo.Context) error {
+		return echo.WrapHandler(templ.Handler(web.Base(c)))(c)
+	}), middlewares.Protected())
+
+	// Views
+	e.GET("/profile", echo.WrapHandler(templ.Handler(views.Profile())), middlewares.Protected())
 
 	return e
 }

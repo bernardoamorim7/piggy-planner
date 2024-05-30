@@ -7,36 +7,36 @@ import (
 	"piggy-planner/internal/models"
 )
 
-var db database.Service = database.New()
-
-type User = models.User
-
 // UserService defines the interface for interacting with users.
 type UserService interface {
 	// Create creates a new user.
-	Create(user *User) error
-
-	// GetByEmail returns a user by email.
-	GetByEmail(email string) (*User, error)
-
-	// GetByID returns a user by ID.
-	GetByID(id int64) (*User, error)
+	Create(user *models.User) error
 
 	// Update updates a user.
-	Update(user *User) error
+	Update(user *models.User) error
 
 	// Delete deletes a user.
 	Delete(id int64) error
+
+	// GetByEmail returns a user by email.
+	GetByEmail(email string) (*models.User, error)
+
+	// GetByID returns a user by ID.
+	GetByID(id int64) (*models.User, error)
 }
 
 // NewUserService creates a new user service.
-func NewUserService() UserService {
-	return &userService{}
+func NewUserService(db database.Service) UserService {
+	return &userService{
+		DB: db,
+	}
 }
 
-type userService struct{}
+type userService struct {
+	DB database.Service
+}
 
-func (s *userService) Create(user *User) error {
+func (s *userService) Create(user *models.User) error {
 	if user.Email == "" {
 		return errors.New("Email is required")
 	}
@@ -55,67 +55,60 @@ func (s *userService) Create(user *User) error {
 		return err
 	}
 
-	query := "INSERT INTO user (name, email, password) VALUES (?, ?, ?)"
+	query := "INSERT INTO user (name, email, password, avatar) VALUES (?, ?, ?, ?)"
 
-	stmt, err := db.Prepare(query)
+	stmt, err := s.DB.Prepare(query)
 	if err != nil {
-		defer stmt.Close()
 		return err
 	}
 
-	_, err = stmt.Exec(user.Name, user.Email, user.Password)
+	_, err = stmt.Exec(user.Name, user.Email, user.Password, user.Avatar)
 	if err != nil {
-		defer stmt.Close()
 		return err
 	}
 
-	defer stmt.Close()
 	return nil
 }
 
-func (s *userService) GetByEmail(email string) (*User, error) {
-	query := "SELECT id, name, email, password FROM user WHERE email = ?"
+func (s *userService) GetByEmail(email string) (*models.User, error) {
+	query := "SELECT id, name, email, password, avatar FROM user WHERE email = ?"
 
-	stmt, err := db.Prepare(query)
+	stmt, err := s.DB.Prepare(query)
 	if err != nil {
-		defer stmt.Close()
 		return nil, err
 	}
 
-	row := stmt.QueryRow(email)
-	user := &User{}
-	err = row.Scan(&user.ID, &user.Name, &user.Email, &user.Password)
+	row := *stmt.QueryRow(email)
+
+	user := &models.User{}
+
+	err = row.Scan(&user.ID, &user.Name, &user.Email, &user.Password, &user.Avatar)
 	if err != nil {
-		defer stmt.Close()
 		return nil, err
 	}
 
-	defer stmt.Close()
 	return user, nil
 }
 
-func (s *userService) GetByID(id int64) (*User, error) {
-	query := "SELECT id, name, email, password FROM user WHERE id = ?"
+func (s *userService) GetByID(id int64) (*models.User, error) {
+	query := "SELECT id, name, email, password, avatar FROM user WHERE id = ?"
 
-	stmt, err := db.Prepare(query)
+	stmt, err := s.DB.Prepare(query)
 	if err != nil {
-		defer stmt.Close()
 		return nil, err
 	}
 
 	row := stmt.QueryRow(id)
-	user := &User{}
-	err = row.Scan(&user.ID, &user.Name, &user.Email, &user.Password)
+	user := &models.User{}
+	err = row.Scan(&user.ID, &user.Name, &user.Email, &user.Password, &user.Avatar)
 	if err != nil {
-		defer stmt.Close()
 		return nil, err
 	}
 
-	defer stmt.Close()
 	return user, nil
 }
 
-func (s *userService) Update(user *User) error {
+func (s *userService) Update(user *models.User) error {
 	if user.ID == 0 {
 		return errors.New("ID is required")
 	}
@@ -133,43 +126,44 @@ func (s *userService) Update(user *User) error {
 		return err
 	}
 
+	u, err := s.GetByEmail(user.Email)
+	if err != nil {
+		if u.Email == user.Email {
+			return errors.New("E-mail already exists")
+		}
+	}
+
 	if err := user.HashPassword(); err != nil {
 		return err
 	}
 
-	query := "UPDATE user SET name = ?, email = ?, password = ? WHERE id = ?"
+	query := "UPDATE user SET name = ?, email = ?, password = ?, avatar = ? WHERE id = ?"
 
-	stmt, err := db.Prepare(query)
+	stmt, err := s.DB.Prepare(query)
 	if err != nil {
-		defer stmt.Close()
 		return err
 	}
 
-	_, err = stmt.Exec(user.Name, user.Email, user.Password, user.ID)
+	_, err = stmt.Exec(user.Name, user.Email, user.Password, user.ID, user.Avatar)
 	if err != nil {
-		defer stmt.Close()
 		return err
 	}
 
-	defer stmt.Close()
 	return nil
 }
 
 func (s *userService) Delete(id int64) error {
 	query := "DELETE FROM user WHERE id = ?"
 
-	stmt, err := db.Prepare(query)
+	stmt, err := s.DB.Prepare(query)
 	if err != nil {
-		defer stmt.Close()
 		return err
 	}
 
 	_, err = stmt.Exec(id)
 	if err != nil {
-		defer stmt.Close()
 		return err
 	}
 
-	defer stmt.Close()
 	return nil
 }

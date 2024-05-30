@@ -1,0 +1,39 @@
+package components
+
+type ToastType string
+
+const (
+	SUCCESS ToastType = "success"
+	ERROR   ToastType = "error"
+	INFO    ToastType = "info"
+	WARNING ToastType = "warning"
+)
+
+templ Toast(toastType ToastType, msg string) {
+	switch toastType {
+		case "success":
+			<div class="toast toast-top toast-end">
+				<div class="alert alert-success">
+					<span>{ msg }</span>
+				</div>
+			</div>
+		case "error":
+			<div class="toast toast-top toast-end">
+				<div class="alert alert-error">
+					<span>{ msg }</span>
+				</div>
+			</div>
+		case "info":
+			<div class="toast toast-top toast-end">
+				<div class="alert alert-info">
+					<span>{ msg }</span>
+				</div>
+			</div>
+		case "warning":
+			<div class="toast toast-top toast-end">
+				<div class="alert alert-warning">
+					<span>{ msg }</span>
+				</div>
+			</div>
+	}
+}

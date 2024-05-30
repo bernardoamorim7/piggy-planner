@@ -14,7 +14,7 @@ CREATE TABLE `security_logs` (
     `user_agent` VARCHAR(255) NOT NULL,
     `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    FOREIGN KEY (fk_user_id) REFERENCES user(id)
+    FOREIGN KEY (`fk_user_id`) REFERENCES `user`(`id`)
 );
 
 -- +goose StatementEnd
