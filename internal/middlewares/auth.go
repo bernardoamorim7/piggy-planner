@@ -21,20 +21,22 @@ func Protected() echo.MiddlewareFunc {
 }
 
 // RedirectIfLoggedIn is a middleware that redirects a user to the dashboard if they are already logged in.
-func RedirectIfLoggedIn(next echo.HandlerFunc) echo.HandlerFunc {
-	return func(c echo.Context) error {
-		sess, err := session.Get("piggysession", c)
-		if err != nil {
-			return echo.NewHTTPError(http.StatusInternalServerError, "server error")
-		}
+func RedirectIfLoggedIn() echo.MiddlewareFunc {
+	return func(next echo.HandlerFunc) echo.HandlerFunc {
+		return func(c echo.Context) error {
+			sess, err := session.Get("piggysession", c)
+			if err != nil {
+				return echo.NewHTTPError(http.StatusInternalServerError, "server error")
+			}
 
-		if auth, ok := sess.Values["authenticated"].(bool); ok && auth {
-			c.Response().Header().Set("Cache-Control", "no-cache, no-store, must-revalidate") // HTTP 1.1.
-			c.Response().Header().Set("Pragma", "no-cache")                                   // HTTP 1.0.
-			c.Response().Header().Set("Expires", "0")                                         // Proxies.
-			return c.Redirect(http.StatusSeeOther, "/dashboard")
-		}
+			if auth, ok := sess.Values["authenticated"].(bool); ok && auth {
+				c.Response().Header().Set("Cache-Control", "no-cache, no-store, must-revalidate") // HTTP 1.1.
+				c.Response().Header().Set("Pragma", "no-cache")                                   // HTTP 1.0.
+				c.Response().Header().Set("Expires", "0")                                         // Proxies.
+				return c.Redirect(http.StatusSeeOther, "/dashboard")
+			}
 
-		return next(c)
+			return next(c)
+		}
 	}
 }

@@ -1,0 +1,24 @@
+package components
+
+import "piggy-planner/cmd/web/icons"
+
+templ Drawer() {
+	<div class="drawer lg:drawer-open z-[1]" x-data="{ url: window.location.pathname }">
+		<input id="my-drawer-2" type="checkbox" class="drawer-toggle"/>
+		<div class="drawer-content" id="main-content" :hx-get="url" hx-trigger="load once" hx-swap="innerHTML transition:true">
+			<!-- Page content will be here -->
+		</div>
+		<!-- Sidebar -->
+		<div class="drawer-side">
+			<label for="my-drawer-2" aria-label="close sidebar" class="drawer-overlay"></label>
+			<ul class="menu p-4 w-52 min-h-full bg-base-200 text-base-content">
+				<li class="bg-base-300 rounded-lg mb-1">
+					<button class="text-xl" hx-get="/" hx-trigger="click" hx-target="#main-content" hx-swap="innerHTML transition:true" hx-push-url="true">
+						@icons.Dashboard()
+						Dashboard
+					</button>
+				</li>
+			</ul>
+		</div>
+	</div>
+}

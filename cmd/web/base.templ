@@ -2,10 +2,9 @@ package web
 
 import (
 	"piggy-planner/cmd/web/components"
-	"github.com/labstack/echo/v4"
 )
 
-templ Base(c echo.Context) {
+templ Base() {
 	<!DOCTYPE html>
 	<html lang="en" data-theme="nord">
 		<head>
@@ -20,12 +19,11 @@ templ Base(c echo.Context) {
 			<script src="assets/js/htmx.min.js"></script>
 			<script src="assets/js/response-targets.min.js"></script>
 			<script src="assets/js/chart.min.js"></script>
+			<script src="assets/js/alpine.min.js" defer></script>
 		</head>
 		<body>
-			@components.Navbar(c)
-			<main id="main">
-				{ children... }
-			</main>
+			@components.Header()
+			@components.Drawer()
 			@components.Footer()
 		</body>
 	</html>

@@ -1,6 +1,7 @@
 package services
 
 import (
+	"errors"
 	"piggy-planner/internal/database"
 	"piggy-planner/internal/models"
 )
@@ -21,6 +22,30 @@ func NewSecurityLogsService(db database.Service) SecurityLogsService {
 }
 
 func (s *securityLogsService) Create(log *models.SecurityLog) error {
-	// TODO
+	if log.Action == "" {
+		return errors.New("Missing log action")
+	}
+	if log.IPAdress == "" {
+		return errors.New("Missing log IP Address")
+	}
+	if log.UserAgent == "" {
+		return errors.New("Missing log user agent")
+	}
+	if log.UserID == 0 {
+		return errors.New("Missing log user ID")
+	}
+
+	query := "INSERT INTO security_log (fk_user_id, action, ip_address, user_agent) VALUES (?, ?, ?, ?)"
+
+	stmt, err := s.DB.Prepare(query)
+	if err != nil {
+		return err
+	}
+
+	_, err = stmt.Exec(log.UserID, log.Action, log.IPAdress, log.UserAgent)
+	if err != nil {
+		return err
+	}
+
 	return nil
 }

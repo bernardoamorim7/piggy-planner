@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"errors"
 	"net/http"
 	"strings"
 
@@ -8,6 +9,7 @@ import (
 	"piggy-planner/internal/models"
 	"piggy-planner/internal/services"
 
+	"github.com/gorilla/sessions"
 	_ "github.com/joho/godotenv/autoload"
 	"github.com/labstack/echo-contrib/session"
 	"github.com/labstack/echo/v4"
@@ -26,7 +28,6 @@ func Login(c echo.Context) error {
 	}
 
 	db := database.New()
-	defer db.Close()
 
 	userService := services.NewUserService(db)
 
@@ -48,6 +49,16 @@ func Login(c echo.Context) error {
 	if err != nil {
 		return err
 	}
+
+	// Create security log
+	logService := services.NewSecurityLogsService(db)
+	log := models.SecurityLog{
+		UserID:    user.ID,
+		Action:    "login",
+		IPAdress:  c.RealIP(),
+		UserAgent: c.Request().UserAgent(),
+	}
+	_ = logService.Create(&log)
 
 	c.Response().Header().Set("HX-Redirect", "/")
 	return c.NoContent(http.StatusOK)
@@ -72,7 +83,6 @@ func Register(c echo.Context) error {
 	}
 
 	db := database.New()
-	defer db.Close()
 
 	userService := services.NewUserService(db)
 
@@ -93,6 +103,64 @@ func Register(c echo.Context) error {
 		return err
 	}
 
+	newUser, err := userService.GetByEmail(user.Email)
+	if err != nil {
+		return err
+	}
+
+	// Create security log
+	logService := services.NewSecurityLogsService(db)
+	log := models.SecurityLog{
+		UserID:    newUser.ID,
+		Action:    "register",
+		IPAdress:  c.RealIP(),
+		UserAgent: c.Request().UserAgent(),
+	}
+	_ = logService.Create(&log)
+
 	c.Response().Header().Set("HX-Redirect", "/login")
+	return c.NoContent(http.StatusOK)
+}
+
+func Logout(c echo.Context) error {
+	sess, _ := session.Get("piggysession", c)
+
+	userID := sess.Values["userID"].(int64)
+
+	db := database.New()
+
+	// Create security log
+	logService := services.NewSecurityLogsService(db)
+	log := models.SecurityLog{
+		UserID:    userID,
+		Action:    "logout",
+		IPAdress:  c.RealIP(),
+		UserAgent: c.Request().UserAgent(),
+	}
+	_ = logService.Create(&log)
+
+	// Clear session
+	sess.Options = &sessions.Options{
+		MaxAge:   -1,
+		HttpOnly: true,
+	}
+	err := sess.Save(c.Request(), c.Response())
+	if err != nil {
+		return errors.New("Failed to delete session")
+	}
+
+	// Clear cookie
+	c.SetCookie(&http.Cookie{
+		Name:   "piggysession",
+		Value:  "",
+		MaxAge: -1,
+	})
+
+	// Clear possible context variables
+	c.Set("userID", nil)
+	c.Set("name", nil)
+	c.Set("avatar", nil)
+
+	c.Response().Header().Set("HX-Redirect", "/")
 	return c.NoContent(http.StatusOK)
 }

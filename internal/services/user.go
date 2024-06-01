@@ -36,40 +36,6 @@ type userService struct {
 	DB database.Service
 }
 
-func (s *userService) Create(user *models.User) error {
-	if user.Email == "" {
-		return errors.New("Email is required")
-	}
-	if user.Name == "" {
-		return errors.New("Name is required")
-	}
-	if user.Password == "" {
-		return errors.New("Password is required")
-	}
-
-	if err := user.Validate(); err != nil {
-		return err
-	}
-
-	if err := user.HashPassword(); err != nil {
-		return err
-	}
-
-	query := "INSERT INTO user (name, email, password, avatar) VALUES (?, ?, ?, ?)"
-
-	stmt, err := s.DB.Prepare(query)
-	if err != nil {
-		return err
-	}
-
-	_, err = stmt.Exec(user.Name, user.Email, user.Password, user.Avatar)
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-
 func (s *userService) GetByEmail(email string) (*models.User, error) {
 	query := "SELECT id, name, email, password, avatar FROM user WHERE email = ?"
 
@@ -106,6 +72,40 @@ func (s *userService) GetByID(id int64) (*models.User, error) {
 	}
 
 	return user, nil
+}
+
+func (s *userService) Create(user *models.User) error {
+	if user.Email == "" {
+		return errors.New("Email is required")
+	}
+	if user.Name == "" {
+		return errors.New("Name is required")
+	}
+	if user.Password == "" {
+		return errors.New("Password is required")
+	}
+
+	if err := user.Validate(); err != nil {
+		return err
+	}
+
+	if err := user.HashPassword(); err != nil {
+		return err
+	}
+
+	query := "INSERT INTO user (name, email, password, avatar) VALUES (?, ?, ?, ?)"
+
+	stmt, err := s.DB.Prepare(query)
+	if err != nil {
+		return err
+	}
+
+	_, err = stmt.Exec(user.Name, user.Email, user.Password, user.Avatar)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func (s *userService) Update(user *models.User) error {

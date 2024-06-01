@@ -1,5 +1,7 @@
 package components
 
+import "piggy-planner/cmd/web/icons"
+
 type ToastType string
 
 const (
@@ -12,26 +14,30 @@ const (
 templ Toast(toastType ToastType, msg string) {
 	switch toastType {
 		case "success":
-			<div class="toast toast-top toast-end">
+			<div @click="open = false" x-data="{ open: true }" x-init="setTimeout(() => { if (open) $el.remove(); }, 3000)" class="toast toast-top toast-end cursor-pointer">
 				<div class="alert alert-success">
+					@icons.Success()
 					<span>{ msg }</span>
 				</div>
 			</div>
 		case "error":
-			<div class="toast toast-top toast-end">
+			<div @click="open = false" x-data="{ open: true }" x-init="setTimeout(() => { if (open) $el.remove(); }, 3000)" class="toast toast-top toast-end cursor-pointer">
 				<div class="alert alert-error">
+					@icons.Error()
 					<span>{ msg }</span>
 				</div>
 			</div>
 		case "info":
-			<div class="toast toast-top toast-end">
+			<div @click="open = false" x-data="{ open: true }" x-init="setTimeout(() => { if (open) $el.remove(); }, 3000)" class="toast toast-top toast-end cursor-pointer">
 				<div class="alert alert-info">
+					@icons.Info()
 					<span>{ msg }</span>
 				</div>
 			</div>
 		case "warning":
-			<div class="toast toast-top toast-end">
+			<div @click="open = false" x-data="{ open: true }" x-init="setTimeout(() => { if (open) $el.remove(); }, 3000)" class="toast toast-top toast-end cursor-pointer">
 				<div class="alert alert-warning">
+					@icons.Warning()
 					<span>{ msg }</span>
 				</div>
 			</div>

@@ -1,0 +1,25 @@
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+
+.piggy {
+    animation: fade-in-out 5s ease-in-out;
+}
+
+@keyframes fade-in-out {
+    0% {
+        opacity: 0;
+    }
+    25% {
+        opacity: 0.5;
+    }
+    50% {
+        opacity: 0.9;
+    }
+    75% {
+        opacity: 0.5;
+    }
+    100% {
+        opacity: 0;
+    }
+}

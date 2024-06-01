@@ -5,11 +5,9 @@ import (
 	"os"
 
 	"piggy-planner/cmd/web"
-	"piggy-planner/cmd/web/views"
 
+	"piggy-planner/internal/handlers"
 	"piggy-planner/internal/middlewares"
-	"piggy-planner/internal/server/handlers"
-	"piggy-planner/internal/utils"
 
 	"github.com/a-h/templ"
 	"github.com/gorilla/sessions"
@@ -25,26 +23,26 @@ func (s *Server) RegisterRoutes() http.Handler {
 	e.Use(middleware.Recover())
 	e.Use(session.Middleware(sessions.NewCookieStore([]byte(os.Getenv("SECRET")))))
 	fileServer := http.FileServer(http.FS(web.Files))
+	e.Use(middlewares.GetSessionVars())
 
 	// Static assets
 	e.GET("/assets/*", echo.WrapHandler(fileServer))
 
 	// Health check
-	e.GET("/health", s.healthHandler, utils.IsLocalhost)
+	e.GET("/health", s.healthHandler, middlewares.IsLocalhost())
 
 	// Auth
-	e.GET("/login", echo.WrapHandler(templ.Handler(web.Login())), middlewares.RedirectIfLoggedIn)
+	e.GET("/login", echo.WrapHandler(templ.Handler(web.Login())), middlewares.RedirectIfLoggedIn())
 	e.POST("/login", handlers.Login)
-	e.GET("/register", echo.WrapHandler(templ.Handler(web.Register())), middlewares.RedirectIfLoggedIn)
+	e.GET("/register", echo.WrapHandler(templ.Handler(web.Register())), middlewares.RedirectIfLoggedIn())
 	e.POST("/register", handlers.Register)
+	e.POST("/logout", handlers.Logout)
 
 	// Index
-	e.GET("/", middlewares.GetSessionVars(func(c echo.Context) error {
-		return echo.WrapHandler(templ.Handler(web.Base(c)))(c)
-	}), middlewares.Protected())
+	e.GET("/", handlers.DashboardHandler, middlewares.Protected())
 
 	// Views
-	e.GET("/profile", echo.WrapHandler(templ.Handler(views.Profile())), middlewares.Protected())
+	e.GET("/profile", handlers.ProfileHandler, middlewares.Protected())
 
 	return e
 }

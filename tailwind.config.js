@@ -2,7 +2,11 @@
 module.exports = {
   content: ['./cmd/web/**/*.templ'],
   theme: {
-    extend: {},
+    extend: {
+      // backgroundImage: theme => ({
+      //   'piggy-pattern': "url('/assets/imgs/favicon.png')",
+      // })
+    },
   },
   plugins: [
     require('daisyui')

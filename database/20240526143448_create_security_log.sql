@@ -1,8 +1,8 @@
 -- +goose Up
 -- +goose StatementBegin
-CREATE TABLE `security_logs` (
+CREATE TABLE `security_log` (
     `id` BIGINT NOT NULL PRIMARY KEY AUTO_INCREMENT,
-    `fk_user_id` BIGINT NOT NULL,
+    `fk_user_id` BIGINT NOT NULL UNIQUE,
     `action` ENUM(
         'register',
         'login',
@@ -20,6 +20,6 @@ CREATE TABLE `security_logs` (
 -- +goose StatementEnd
 -- +goose Down
 -- +goose StatementBegin
-DROP TABLE `security_logs`;
+DROP TABLE `security_log`;
 
 -- +goose StatementEnd
