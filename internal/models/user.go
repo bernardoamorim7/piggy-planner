@@ -10,11 +10,11 @@ import (
 
 // User represents a user in the system.
 type User struct {
-	ID       int64  // Unique identifier
-	Name     string // Name of the user
-	Email    string // Email address of the user
-	Password string // Hashed password of the user
-	Avatar   string // URL of Dicebear's API generated avatar
+	ID       uint64 `db:"id"`       // Unique identifier
+	Name     string `db:"name"`     // Name of the user
+	Email    string `db:"email"`    // Email address of the user
+	Password string `db:"password"` // Hashed password of the user
+	Avatar   string `db:"avatar"`   // URL of Dicebear's API generated avatar
 }
 
 // NewUser creates a new user.

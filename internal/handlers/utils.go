@@ -12,11 +12,13 @@ func render(ctx echo.Context, statusCode int, t templ.Component) error {
 	buf := templ.GetBuffer()
 	defer templ.ReleaseBuffer(buf)
 
+	userID := ctx.Get("userID")
 	name := ctx.Get("name")
 	avatar := ctx.Get("avatar")
 
 	// Create a new context that includes the values
-	newCtx := context.WithValue(ctx.Request().Context(), "name", name)
+	newCtx := context.WithValue(ctx.Request().Context(), "userID", userID)
+	newCtx = context.WithValue(newCtx, "name", name)
 	newCtx = context.WithValue(newCtx, "avatar", avatar)
 
 	if err := t.Render(newCtx, buf); err != nil {

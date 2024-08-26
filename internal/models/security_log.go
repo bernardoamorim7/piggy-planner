@@ -11,14 +11,14 @@ const (
 )
 
 type SecurityLog struct {
-	ID        int64
-	UserID    int64
-	Action    action
-	IPAdress  string
-	UserAgent string
+	ID        uint64 `db:"id"`
+	UserID    uint64 `db:"fk_user_id"`
+	Action    action `db:"action"`
+	IPAdress  string `db:"ip_address"`
+	UserAgent string `db:"user_agent"`
 }
 
-func NewSecurityLog(id int64, userId int64, action action, ipAdress string, userAgent string) *SecurityLog {
+func NewSecurityLog(id uint64, userId uint64, action action, ipAdress string, userAgent string) *SecurityLog {
 	return &SecurityLog{
 		ID:        id,
 		UserID:    userId,

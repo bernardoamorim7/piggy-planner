@@ -37,7 +37,7 @@ type userService struct {
 }
 
 func (s *userService) GetByEmail(email string) (*models.User, error) {
-	query := "SELECT id, name, email, password, avatar FROM user WHERE email = ?"
+	query := "SELECT id, name, email, password, avatar FROM users WHERE email = ?"
 
 	stmt, err := s.DB.Prepare(query)
 	if err != nil {
@@ -57,7 +57,7 @@ func (s *userService) GetByEmail(email string) (*models.User, error) {
 }
 
 func (s *userService) GetByID(id int64) (*models.User, error) {
-	query := "SELECT id, name, email, password, avatar FROM user WHERE id = ?"
+	query := "SELECT id, name, email, password, avatar FROM users WHERE id = ?"
 
 	stmt, err := s.DB.Prepare(query)
 	if err != nil {
@@ -93,7 +93,7 @@ func (s *userService) Create(user *models.User) error {
 		return err
 	}
 
-	query := "INSERT INTO user (name, email, password, avatar) VALUES (?, ?, ?, ?)"
+	query := "INSERT INTO users (name, email, password, avatar) VALUES (?, ?, ?, ?)"
 
 	stmt, err := s.DB.Prepare(query)
 	if err != nil {
@@ -137,7 +137,7 @@ func (s *userService) Update(user *models.User) error {
 		return err
 	}
 
-	query := "UPDATE user SET name = ?, email = ?, password = ?, avatar = ? WHERE id = ?"
+	query := "UPDATE users SET name = ?, email = ?, password = ?, avatar = ? WHERE id = ?"
 
 	stmt, err := s.DB.Prepare(query)
 	if err != nil {
@@ -153,7 +153,7 @@ func (s *userService) Update(user *models.User) error {
 }
 
 func (s *userService) Delete(id int64) error {
-	query := "DELETE FROM user WHERE id = ?"
+	query := "DELETE FROM users WHERE id = ?"
 
 	stmt, err := s.DB.Prepare(query)
 	if err != nil {

@@ -1,0 +1,38 @@
+package views
+
+import "piggy-planner/cmd/web/icons"
+
+templ Objectives() {
+	<main class="flex-1 overflow-y-auto pt-4 px-4" id="objectives">
+		<h1 class="text-xl font-semibold text-primary mb-2">Objectives</h1>
+		<div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+			<div class="join">
+				<div class="bg-primary join-item text-center rounded-lg px-4 flex flex-wrap flex-shrink items-center justify-center">
+					@icons.Search()
+				</div>
+				<input id="search" type="search" placeholder="Search objective..." class="input input-bordered w-full max-w-xs join-item text-accent" name="search" hx-post="./modules/games/search.php" hx-target="#objectives tbody" hx-trigger="input changed delay:500ms, search" hx-swap="innerHTML"/>
+			</div>
+			<div class="text-center lg:text-right">
+				<button type="button" class="btn btn-success normal-case" onclick="addGameModal.showModal()">
+					@icons.Add()
+					Add Objective
+				</button>
+			</div>
+		</div>
+		<div class="divider mt-2"></div>
+		<div class="overflow-x-auto">
+			<table class="table table-xs text-accent text-center items-center align-middle break-all lg:table-lg">
+				<thead>
+					<tr>
+						<th>ID</th>
+						<th>Amount</th>
+						<th>Description</th>
+						<th>Type</th>
+						<th>Date</th>
+					</tr>
+				</thead>
+				<tbody id="table-body"></tbody>
+			</table>
+		</div>
+	</main>
+}

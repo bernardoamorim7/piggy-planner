@@ -125,7 +125,7 @@ func Register(c echo.Context) error {
 func Logout(c echo.Context) error {
 	sess, _ := session.Get("piggysession", c)
 
-	userID := sess.Values["userID"].(int64)
+	userID := sess.Values["userID"].(uint64)
 
 	db := database.New()
 

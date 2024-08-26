@@ -1,8 +1,8 @@
 -- +goose Up
 -- +goose StatementBegin
-CREATE TABLE `security_log` (
-    `id` BIGINT NOT NULL PRIMARY KEY AUTO_INCREMENT,
-    `fk_user_id` BIGINT NOT NULL UNIQUE,
+CREATE TABLE `security_logs` (
+    `id` BIGINT NOT NULL PRIMARY KEY AUTO_INCREMENT UNIQUE,
+    `fk_user_id` BIGINT NOT NULL,
     `action` ENUM(
         'register',
         'login',
@@ -13,13 +13,12 @@ CREATE TABLE `security_log` (
     `ip_address` VARCHAR(255) NOT NULL,
     `user_agent` VARCHAR(255) NOT NULL,
     `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    FOREIGN KEY (`fk_user_id`) REFERENCES `user`(`id`)
+    `updated_at` TIMESTAMP DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (`fk_user_id`) REFERENCES `users`(`id`)
 );
-
 -- +goose StatementEnd
+
 -- +goose Down
 -- +goose StatementBegin
-DROP TABLE `security_log`;
-
+DROP TABLE `security_logs`;
 -- +goose StatementEnd

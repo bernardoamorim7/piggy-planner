@@ -1,6 +1,7 @@
 package middlewares
 
 import (
+	"fmt"
 	"log/slog"
 
 	"github.com/labstack/echo-contrib/session"
@@ -16,10 +17,10 @@ func GetSessionVars() echo.MiddlewareFunc {
 			}
 
 			if sess.Values["userID"] != nil {
-				if value, ok := sess.Values["userID"].(int64); ok {
+				if value, ok := sess.Values["userID"].(uint64); ok {
 					c.Set("userID", value)
 				} else {
-					slog.WarnContext(c.Request().Context(), "userID is not of type int64")
+					slog.WarnContext(c.Request().Context(), "userID is not of type uint64 ("+fmt.Sprintf("%T", sess.Values["userID"])+")")
 				}
 			}
 
@@ -27,7 +28,7 @@ func GetSessionVars() echo.MiddlewareFunc {
 				if value, ok := sess.Values["name"].(string); ok {
 					c.Set("name", value)
 				} else {
-					slog.WarnContext(c.Request().Context(), "name is not of type string")
+					slog.WarnContext(c.Request().Context(), "name is not of type string ("+fmt.Sprintf("%T", sess.Values["name"])+")")
 				}
 			}
 
@@ -35,7 +36,7 @@ func GetSessionVars() echo.MiddlewareFunc {
 				if value, ok := sess.Values["avatar"].(string); ok {
 					c.Set("avatar", value)
 				} else {
-					slog.WarnContext(c.Request().Context(), "avatar is not of type string")
+					slog.WarnContext(c.Request().Context(), "avatar is not of type string ("+fmt.Sprintf("%T", sess.Values["avatar"])+")")
 				}
 			}
 

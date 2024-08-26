@@ -35,7 +35,7 @@ func (s *securityLogsService) Create(log *models.SecurityLog) error {
 		return errors.New("Missing log user ID")
 	}
 
-	query := "INSERT INTO security_log (fk_user_id, action, ip_address, user_agent) VALUES (?, ?, ?, ?)"
+	query := "INSERT INTO security_logs (fk_user_id, action, ip_address, user_agent) VALUES (?, ?, ?, ?)"
 
 	stmt, err := s.DB.Prepare(query)
 	if err != nil {
