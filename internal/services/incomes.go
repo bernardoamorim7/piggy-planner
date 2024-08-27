@@ -14,10 +14,12 @@ type IncomeService interface {
 	GetAll(fkUserId uint64) ([]models.Income, error)
 	// Get a income by ID from the database
 	GetByID(id uint64) (*models.Income, error)
-	// Delete a income by ID from the database
-	Delete(id uint64) error
+	// Get a income by description from the database
+	GetByDescription(description string) ([]models.Income, error)
 	// Update a income in the database
 	Update(income *models.Income) error
+	// Delete a income by ID from the database
+	Delete(id uint64) error
 }
 
 type incomeService struct {
@@ -102,9 +104,13 @@ func (s *incomeService) GetAll(fkUserId uint64) ([]models.Income, error) {
 			return nil, err
 		}
 
-		income.Date, err = time.Parse("2006-01-02", string(date))
-		if err != nil {
-			return nil, err
+		if string(date) != "0000-00-00" {
+			income.Date, err = time.Parse("2006-01-02", string(date))
+			if err != nil {
+				return nil, err
+			}
+		} else {
+			income.Date = time.Time{}
 		}
 
 		income.Type = incomeType
@@ -116,7 +122,25 @@ func (s *incomeService) GetAll(fkUserId uint64) ([]models.Income, error) {
 }
 
 func (s *incomeService) GetByID(id uint64) (*models.Income, error) {
-	query := "SELECT * FROM incomes WHERE id = ?"
+	query := `SELECT 
+						incomes.id, 
+						incomes.fk_user_id, 
+						incomes.amount, 
+						incomes.description, 
+						income_types.id AS income_type_id, 
+						income_types.name AS income_type_name, 
+						incomes.date 
+					FROM 
+						incomes 
+					INNER JOIN 
+						income_types 
+					ON 
+						incomes.fk_income_type_id = income_types.id 
+					WHERE 
+						incomes.id = ? 
+					ORDER BY 
+						incomes.date DESC
+					LIMIT 1`
 
 	stmt, err := s.DB.Prepare(query)
 	if err != nil {
@@ -126,28 +150,89 @@ func (s *incomeService) GetByID(id uint64) (*models.Income, error) {
 	row := stmt.QueryRow(id)
 
 	var income models.Income
-	err = row.Scan(&income.ID, &income.UserID, &income.Amount, &income.Description, &income.Type, &income.Date, &income.CreatedAt, &income.UpdatedAt)
+	var incomeType models.IncomeType
+	var date []byte
+	err = row.Scan(&income.ID, &income.UserID, &income.Amount, &income.Description, &incomeType.ID, &incomeType.Name, &date)
 	if err != nil {
 		return nil, err
 	}
 
+	if string(date) != "0000-00-00" {
+		income.Date, err = time.Parse("2006-01-02", string(date))
+		if err != nil {
+			return nil, err
+		}
+	} else {
+		income.Date = time.Time{}
+	}
+
+	income.Type = incomeType
+
 	return &income, nil
 }
 
-func (s *incomeService) Delete(id uint64) error {
-	query := "DELETE FROM incomes WHERE id = ?"
+func (s *incomeService) GetByDescription(description string) ([]models.Income, error) {
+	query := `SELECT 
+						incomes.id, 
+						incomes.fk_user_id, 
+						incomes.amount, 
+						incomes.description, 
+						income_types.id AS income_type_id, 
+						income_types.name AS income_type_name, 
+						incomes.date 
+					FROM 
+						incomes 
+					INNER JOIN 
+						income_types 
+					ON 
+						incomes.fk_income_type_id = income_types.id 
+					WHERE 
+						incomes.description LIKE ?
+					ORDER BY 
+						incomes.date DESC
+					`
 
 	stmt, err := s.DB.Prepare(query)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
-	_, err = stmt.Exec(id)
+	description = "%" + description + "%"
+	row, err := stmt.Query(description)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
-	return nil
+	var incomes []models.Income
+	for row.Next() {
+		var income models.Income
+		var incomeType models.IncomeType
+		var date []byte
+
+		err := row.Scan(&income.ID, &income.UserID, &income.Amount, &income.Description, &incomeType.ID, &incomeType.Name, &date)
+		if err != nil {
+			return nil, err
+		}
+
+		if string(date) != "0000-00-00" {
+			income.Date, err = time.Parse("2006-01-02", string(date))
+			if err != nil {
+				return nil, err
+			}
+		} else {
+			income.Date = time.Time{}
+		}
+
+		income.Type = incomeType
+
+		incomes = append(incomes, income)
+	}
+
+	if len(incomes) == 0 {
+		return nil, errors.New("Income not found")
+	}
+
+	return incomes, nil
 }
 
 func (s *incomeService) Update(income *models.Income) error {
@@ -178,6 +263,22 @@ func (s *incomeService) Update(income *models.Income) error {
 	return nil
 }
 
+func (s *incomeService) Delete(id uint64) error {
+	query := "DELETE FROM incomes WHERE id = ?"
+
+	stmt, err := s.DB.Prepare(query)
+	if err != nil {
+		return err
+	}
+
+	_, err = stmt.Exec(id)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 // IncomeTypeService represents a service for managing income types.
 type IncomeTypeService interface {
 	// Create a income type in the database
@@ -186,10 +287,10 @@ type IncomeTypeService interface {
 	GetAll(fkUserID uint64) ([]models.IncomeType, error)
 	// Get a income type by ID from the database
 	GetByID(id uint64) (*models.IncomeType, error)
-	// Delete a income type by ID from the database
-	Delete(id uint64) error
 	// Update a income type in the database
 	Update(incomeType *models.IncomeType) error
+	// Delete a income type by ID from the database
+	Delete(id uint64) error
 }
 
 type incomeTypeService struct {
@@ -268,22 +369,6 @@ func (s *incomeTypeService) GetByID(id uint64) (*models.IncomeType, error) {
 	return &incomeType, nil
 }
 
-func (s *incomeTypeService) Delete(id uint64) error {
-	query := "DELETE FROM income_types WHERE id = ?"
-
-	stmt, err := s.DB.Prepare(query)
-	if err != nil {
-		return err
-	}
-
-	_, err = stmt.Exec(id)
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-
 func (s *incomeTypeService) Update(incomeType *models.IncomeType) error {
 	if incomeType.Name == "" {
 		return errors.New("Missing income type name")
@@ -297,6 +382,22 @@ func (s *incomeTypeService) Update(incomeType *models.IncomeType) error {
 	}
 
 	_, err = stmt.Exec(incomeType.Name, incomeType.ID)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (s *incomeTypeService) Delete(id uint64) error {
+	query := "DELETE FROM income_types WHERE id = ?"
+
+	stmt, err := s.DB.Prepare(query)
+	if err != nil {
+		return err
+	}
+
+	_, err = stmt.Exec(id)
 	if err != nil {
 		return err
 	}

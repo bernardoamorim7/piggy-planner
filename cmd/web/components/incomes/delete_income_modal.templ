@@ -1,0 +1,45 @@
+package incomes
+
+import (
+	"fmt"
+	"piggy-planner/cmd/web/icons"
+)
+
+// Delete Income Modal
+templ DeleteIncomeModal(incomeID uint64) {
+	<dialog
+		id="deleteIncomeModal"
+		class="modal modal-bottom sm:modal-middle"
+		@close="window.location.reload()"
+	>
+		<div class="modal-box">
+			<h3
+				id="deleteIncomeModalTitle"
+				class="font-bold text-xl text-center mb-2"
+			>Delete Income?</h3>
+			<div class="modal-action items-center content-center justify-center">
+				<form method="dialog">
+					<button
+						class="btn btn-error normal-case"
+					>
+						Cancel
+						@icons.Close()
+					</button>
+				</form>
+				<form
+					id="deleteIncomeForm"
+					hx-delete="/api/incomes"
+				>
+					<input type="hidden" name="id" value={ fmt.Sprintf("%v", incomeID) }/>
+					<button
+						type="submit"
+						class="btn btn-success"
+					>
+						Delete
+						@icons.Delete()
+					</button>
+				</form>
+			</div>
+		</div>
+	</dialog>
+}

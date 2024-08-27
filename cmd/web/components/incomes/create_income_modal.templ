@@ -1,0 +1,52 @@
+package incomes
+
+import "piggy-planner/cmd/web/icons"
+
+// Create Income Modal
+templ CreateIncomeModal() {
+	<dialog id="createIncomeModal" class="modal modal-bottom sm:modal-middle">
+		<div class="modal-box">
+			<h3 class="text-lg font-bold">
+				Add Income
+			</h3>
+			<p class="py-4"></p>
+			<form
+				id="addIncomeForm"
+				class="flex flex-col gap-4"
+				hx-post="/api/incomes"
+				hx-ext="response-targets"
+				hx-target-error="#err"
+			>
+				<label class="input input-bordered flex items-center gap-2">
+					@icons.Money()
+					<input type="number" step="0.01" min="0" class="grow" placeholder="Amount" name="amount" required/>
+				</label>
+				<label class="input input-bordered flex items-center gap-2">
+					@icons.Description()
+					<input type="text" class="grow" placeholder="Description" name="description" required/>
+				</label>
+				<label class="input input-bordered flex items-center gap-2" hx-get="/api/incomes/types" hx-trigger="load" hx-target="#incomeType">
+					@icons.Receipt()
+					<select id="incomeType" class="grow" name="incomeType" required></select>
+				</label>
+				<label class="input input-bordered flex items-center gap-2">
+					@icons.Calendar()
+					<input type="date" class="grow" name="date"/>
+				</label>
+				<p class="text-center my-4 text-error h-4 max-w-64 break-all" id="err"></p>
+			</form>
+			<div class="modal-action">
+				<form method="dialog">
+					<button class="btn btn-error">
+						Cancel
+						@icons.Close()
+					</button>
+				</form>
+				<button class="btn btn-success" type="submit" form="addIncomeForm">
+					Add
+					@icons.Add()
+				</button>
+			</div>
+		</div>
+	</dialog>
+}

@@ -1,9 +1,6 @@
 package views
 
-import (
-	"fmt"
-	"piggy-planner/cmd/web/icons"
-)
+import "piggy-planner/cmd/web/icons"
 
 templ Incomes() {
 	<main class="flex-1 overflow-y-auto pt-4 px-4" id="incomes">
@@ -13,14 +10,39 @@ templ Incomes() {
 				<div class="bg-primary join-item text-center rounded-lg px-4 flex flex-wrap flex-shrink items-center justify-center">
 					@icons.Search()
 				</div>
-				<input id="search" type="search" placeholder="Search income..." class="input input-bordered w-full max-w-xs join-item text-accent" name="search" hx-post="./modules/games/search.php" hx-target="#incomes tbody" hx-trigger="input changed delay:500ms, search" hx-swap="innerHTML"/>
+				<input
+					id="search"
+					type="search"
+					placeholder="Search income..."
+					class="input input-bordered w-full max-w-xs join-item"
+					name="search"
+					hx-post="/api/incomes/search"
+					hx-vals='{"description": this.value}'
+					hx-target="#table-body"
+					hx-trigger="input changed delay:250ms, search"
+					hx-swap="innerHTML"
+				/>
 			</div>
 			<div class="text-center lg:text-right">
-				<button type="button" class="btn btn-info normal-case" onclick="addIncomeTypeModal.showModal()">
+				<button
+					type="button"
+					class="btn btn-info normal-case"
+					hx-get="/modals/incomes/types/create"
+					hx-trigger="click"
+					hx-target="#incomeModals"
+					hx-on::after-request="document.getElementById('createIncomeTypeModal').showModal()"
+				>
 					@icons.Add()
 					Add Income Type
 				</button>
-				<button type="button" class="btn btn-success normal-case" onclick="addIncomeModal.showModal()">
+				<button
+					type="button"
+					class="btn btn-success normal-case"
+					hx-get="/modals/incomes/create"
+					hx-trigger="click"
+					hx-target="#incomeModals"
+					hx-on::after-request="document.getElementById('createIncomeModal').showModal()"
+				>
 					@icons.Add()
 					Add Income
 				</button>
@@ -36,121 +58,12 @@ templ Incomes() {
 						<th>Description</th>
 						<th>Type</th>
 						<th>Date</th>
+						<th>Actions</th>
 					</tr>
 				</thead>
-				<tbody id="table-body" hx-get={ fmt.Sprintf("/api/incomes/%v", ctx.Value("userID")) } hx-trigger="load" hx-target="#table-body"></tbody>
+				<tbody id="table-body" hx-get="/api/incomes" hx-trigger="load" hx-target="#table-body" hx-ext="response-targets" hx-target-404="#table-body"></tbody>
 			</table>
 		</div>
 	</main>
-	// Add Income Modal
-	<dialog id="addIncomeModal" class="modal modal-bottom sm:modal-middle">
-		<div class="modal-box">
-			<h3 class="text-lg font-bold">
-				Add Income
-			</h3>
-			<p class="py-4"></p>
-			<form id="addIncomeForm" class="flex flex-col gap-4" hx-post={ fmt.Sprintf("/api/incomes/%v", ctx.Value("userID")) } hx-ext="response-targets" hx-target-error="#err">
-				<label class="input input-bordered flex items-center gap-2">
-					@icons.Money()
-					<input type="number" step="0.01" min="0" class="grow" placeholder="Amount" name="amount"/>
-				</label>
-				<label class="input input-bordered flex items-center gap-2">
-					@icons.Description()
-					<input type="text" class="grow" placeholder="Description" name="description"/>
-				</label>
-				<label class="input input-bordered flex items-center gap-2" hx-get={ fmt.Sprintf("/api/incomes/types/%v", ctx.Value("userID")) } hx-trigger="load" hx-target="#incomeType">
-					@icons.Receipt()
-					<select id="incomeType" class="grow" name="incomeType"></select>
-				</label>
-				<label class="input input-bordered flex items-center gap-2">
-					@icons.Calendar()
-					<input type="date" class="grow" name="date"/>
-				</label>
-				<p class="text-center my-4 text-error h-4 max-w-64 break-all" id="err"></p>
-			</form>
-			<div class="modal-action">
-				<form method="dialog">
-					<button class="btn btn-error">
-						Cancel
-						@icons.Close()
-					</button>
-				</form>
-				<button class="btn btn-success" type="submit" form="addIncomeForm">
-					Add
-					@icons.Add()
-				</button>
-			</div>
-		</div>
-	</dialog>
-	// Add Income Type Modal
-	<dialog id="addIncomeTypeModal" class="modal modal-bottom sm:modal-middle">
-		<div class="modal-box">
-			<h3 class="text-lg font-bold">
-				Add Income Type
-			</h3>
-			<p class="py-4"></p>
-			<form id="addIncomeTypeForm" class="flex flex-col gap-4" hx-post={ fmt.Sprintf("/api/incomes/types/%v", ctx.Value("userID")) } hx-ext="response-targets" hx-target-error="#err">
-				<label class="input input-bordered flex items-center gap-2">
-					@icons.Description()
-					<input type="text" class="grow" placeholder="Name" name="name"/>
-				</label>
-				<p class="text-center my-4 text-error h-4 max-w-64 break-all" id="err"></p>
-			</form>
-			<div class="modal-action">
-				<form method="dialog">
-					<button class="btn btn-error">
-						Cancel
-						@icons.Close()
-					</button>
-				</form>
-				<button class="btn btn-success" type="submit" form="addIncomeTypeForm">
-					Add
-					@icons.Add()
-				</button>
-			</div>
-		</div>
-	</dialog>
-	// Add rows to the table
-	<script>
-        document.addEventListener('htmx:afterOnLoad', function(event) {
-            if (event.detail.target.id === 'table-body') {
-                const data = JSON.parse(event.detail.xhr.response);
-                const tableBody = document.getElementById('table-body');
-                tableBody.innerHTML = '';
-
-				if (!data) {
-					tableBody.innerHTML = '<tr><td colspan="5">No incomes found</td></tr>';
-					return;
-				};
-
-                data.forEach(income => {
-                    const row = document.createElement('tr');
-                    row.innerHTML = `
-                        <td>${income.ID}</td>
-                        <td>${income.Amount}$</td>
-                        <td>${income.Description}</td>
-						<td>${income.Type.Name}</td>
-						<td>${new Date(income.Date).toISOString().split('T')[0]}</td>
-					`;
-                    tableBody.appendChild(row);
-                });
-            }
-
-			if (event.detail.target.id === 'incomeType') {
-				const data = JSON.parse(event.detail.xhr.response);
-				const incomeType = document.getElementById('incomeType');
-				incomeType.innerHTML = '';
-				incomeType.innerHTML = '<option value="" selected disabled>Select Type</option>';
-				
-				if (!data) return;
-
-				data.forEach(type => {
-					const option = document.createElement('option');
-					option.value = type.ID;
-					option.innerText = type.Name;
-					incomeType.appendChild(option);
-				});
-			}
-        });
-    </script>
+	<div id="incomeModals"></div>
 }

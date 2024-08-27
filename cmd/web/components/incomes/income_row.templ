@@ -1,0 +1,40 @@
+package incomes
+
+import (
+	"fmt"
+	"piggy-planner/cmd/web/components/utils"
+	"piggy-planner/cmd/web/icons"
+	"piggy-planner/internal/models"
+)
+
+templ IncomeRow(income models.Income) {
+	<tr>
+		<td>{ fmt.Sprintf("%v", income.ID) }</td>
+		<td>{ fmt.Sprintf("%v", income.Amount) }</td>
+		<td>{ income.Description }</td>
+		<td>{ income.Type.Name }</td>
+		<td>{ utils.ParseDate(income.Date) }</td>
+		<td>
+			<button
+				type="button"
+				class="btn btn-sm btn-warning"
+				hx-get={ fmt.Sprintf("/modals/incomes/update/%v", income.ID) }
+				hx-trigger="click"
+				hx-target="#incomeModals"
+				hx-on::after-request="document.getElementById('updateIncomeModal').showModal()"
+			>
+				@icons.Edit()
+			</button>
+			<button
+				type="button"
+				class="btn btn-sm btn-error"
+				hx-get={ fmt.Sprintf("/modals/incomes/delete/%v", income.ID) }
+				hx-trigger="click"
+				hx-target="#incomeModals"
+				hx-on::after-request="document.getElementById('deleteIncomeModal').showModal()"
+			>
+				@icons.Delete()
+			</button>
+		</td>
+	</tr>
+}

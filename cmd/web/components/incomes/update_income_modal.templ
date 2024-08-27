@@ -1,0 +1,61 @@
+package incomes
+
+import (
+	"fmt"
+	"piggy-planner/cmd/web/icons"
+	"piggy-planner/internal/models"
+)
+
+// Update Income Modal
+templ UpdateIncomeModal(income models.Income) {
+	<dialog id="updateIncomeModal" class="modal modal-bottom sm:modal-middle" @close="window.location.reload()">
+		<div class="modal-box">
+			<h3 class="text-lg font-bold">
+				Update Income
+			</h3>
+			<p class="py-4"></p>
+			<form
+				id="updateIncomeForm"
+				class="flex flex-col gap-4"
+				hx-put="/api/incomes"
+				hx-ext="response-targets"
+				hx-target-error="#err"
+			>
+				<input type="hidden" name="id" value={ fmt.Sprintf("%v", income.ID) }/>
+				<input type="hidden" name="oldAmount" value={ fmt.Sprintf("%v", income.Amount) }/>
+				<input type="hidden" name="oldDescription" value={ income.Description }/>
+				<input type="hidden" name="oldIncomeType" value={ fmt.Sprintf("%v", income.Type.ID) }/>
+				<input type="hidden" name="oldDate" value={ fmt.Sprintf("%v", income.Date) }/>
+				<label class="input input-bordered flex items-center gap-2">
+					@icons.Money()
+					<input type="number" step="0.01" min="0" class="grow" placeholder="Amount" name="amount" value={ fmt.Sprintf("%v", income.Amount) } required/>
+				</label>
+				<label class="input input-bordered flex items-center gap-2">
+					@icons.Description()
+					<input type="text" class="grow" placeholder="Description" name="description" value={ income.Description } required/>
+				</label>
+				<label class="input input-bordered flex items-center gap-2" hx-get="/api/incomes/types" hx-trigger="load" hx-target="#incomeType">
+					@icons.Receipt()
+					<select id="incomeType" class="grow" name="incomeType" required value={ fmt.Sprintf("%v", income.Type.ID) }></select>
+				</label>
+				<label class="input input-bordered flex items-center gap-2">
+					@icons.Calendar()
+					<input type="date" class="grow" name="date" value={ fmt.Sprintf("%v", income.Date) }/>
+				</label>
+				<p class="text-center my-4 text-error h-4 max-w-64 break-all" id="err"></p>
+			</form>
+			<div class="modal-action">
+				<form method="dialog">
+					<button class="btn btn-error">
+						Cancel
+						@icons.Close()
+					</button>
+				</form>
+				<button class="btn btn-success" type="submit" form="updateIncomeForm">
+					Update
+					@icons.Upgrade()
+				</button>
+			</div>
+		</div>
+	</dialog>
+}

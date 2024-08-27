@@ -53,22 +53,29 @@ func (s *Server) RegisterRoutes() http.Handler {
 	e.GET("/expenses", handlers.ExpensesHandler, middlewares.Protected())
 	e.GET("/objectives", handlers.ObjectivesHandler, middlewares.Protected())
 
+	// Modals
+	e.GET("/modals/incomes/create", handlers.CreateIncomeModalHandler, middlewares.Protected())
+	e.GET("/modals/incomes/update/:id", handlers.UpdateIncomeModalHandler, middlewares.Protected())
+	e.GET("/modals/incomes/delete/:id", handlers.DeleteIncomeModalHandler, middlewares.Protected())
+
+	e.GET("/modals/incomes/types/create", handlers.CreateIncomeTypeModalHandler, middlewares.Protected())
 	// API
 	api := e.Group("/api")
 
 	// Incomes
-	api.POST("/incomes/:userID", handlers.CreateIncome, middlewares.Protected())
-	api.GET("/incomes/:userID", handlers.GetAllIncomes, middlewares.Protected())
+	api.POST("/incomes", handlers.CreateIncome, middlewares.Protected())
+	api.GET("/incomes", handlers.GetAllIncomes, middlewares.Protected())
 	api.GET("/incomes/income/:id", handlers.GetIncome, middlewares.Protected())
-	api.PUT("/incomes/:id", handlers.UpdateIncome, middlewares.Protected())
-	api.DELETE("/incomes/:id", handlers.DeleteIncome, middlewares.Protected())
+	api.POST("/incomes/search", handlers.GetIncomesByDescription, middlewares.Protected())
+	api.PUT("/incomes", handlers.UpdateIncome, middlewares.Protected())
+	api.DELETE("/incomes", handlers.DeleteIncome, middlewares.Protected())
 
 	// Incomes types
-	api.POST("/incomes/types/:userID", handlers.CreateIncomeType, middlewares.Protected())
-	api.GET("/incomes/types/:userID", handlers.GetAllIncomeTypes, middlewares.Protected())
+	api.POST("/incomes/types", handlers.CreateIncomeType, middlewares.Protected())
+	api.GET("/incomes/types", handlers.GetAllIncomeTypes, middlewares.Protected())
 	api.GET("/incomes/types/type/:id", handlers.GetIncomeType, middlewares.Protected())
-	api.PUT("/incomes/types/:id", handlers.UpdateIncomeType, middlewares.Protected())
-	api.DELETE("/incomes/types/:id", handlers.DeleteIncomeType, middlewares.Protected())
+	api.PUT("/incomes/types", handlers.UpdateIncomeType, middlewares.Protected())
+	api.DELETE("/incomes/types", handlers.DeleteIncomeType, middlewares.Protected())
 
 	return e
 }
