@@ -244,18 +244,22 @@ func (s *incomeService) Update(income *models.Income) error {
 		return errors.New("Missing income description")
 	}
 
+	if income.Type.ID == 0 {
+		return errors.New("Missing income type ID")
+	}
+
 	if income.UserID == 0 {
 		return errors.New("Missing income user ID")
 	}
 
-	query := "UPDATE incomes SET fk_user_id = ?, amount = ?, description = ?, date = ? WHERE id = ?"
+	query := "UPDATE incomes SET amount = ?, description = ?, fk_income_type_id = ?, date = ? WHERE id = ?"
 
 	stmt, err := s.DB.Prepare(query)
 	if err != nil {
 		return err
 	}
 
-	_, err = stmt.Exec(income.UserID, income.Amount, income.Description, income.Date, income.ID)
+	_, err = stmt.Exec(income.Amount, income.Description, income.Type.ID, income.Date, income.ID)
 	if err != nil {
 		return err
 	}

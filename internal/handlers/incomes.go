@@ -173,6 +173,7 @@ func UpdateIncome(c echo.Context) error {
 	}
 
 	dateStr := c.FormValue("date")
+	
 	var date time.Time
 	if dateStr != "0000-00-00" {
 		date, err = time.Parse("2006-01-02", dateStr)

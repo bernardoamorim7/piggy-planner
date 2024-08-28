@@ -2,6 +2,7 @@ package incomes
 
 import (
 	"fmt"
+	"piggy-planner/cmd/web/components/utils"
 	"piggy-planner/cmd/web/icons"
 	"piggy-planner/internal/models"
 )
@@ -40,7 +41,7 @@ templ UpdateIncomeModal(income models.Income) {
 				</label>
 				<label class="input input-bordered flex items-center gap-2">
 					@icons.Calendar()
-					<input type="date" class="grow" name="date" value={ fmt.Sprintf("%v", income.Date) }/>
+					<input type="date" class="grow" name="date" value={ utils.ParseDate(income.Date) }/>
 				</label>
 				<p class="text-center my-4 text-error h-4 max-w-64 break-all" id="err"></p>
 			</form>
