@@ -59,6 +59,13 @@ func (s *Server) RegisterRoutes() http.Handler {
 	e.GET("/modals/incomes/delete/:id", handlers.DeleteIncomeModalHandler, middlewares.Protected())
 
 	e.GET("/modals/incomes/types/create", handlers.CreateIncomeTypeModalHandler, middlewares.Protected())
+	
+	e.GET("/modals/expenses/create", handlers.CreateExpenseModalHandler, middlewares.Protected())
+	e.GET("/modals/expenses/update/:id", handlers.UpdateExpenseModalHandler, middlewares.Protected())
+	e.GET("/modals/expenses/delete/:id", handlers.DeleteExpenseModalHandler, middlewares.Protected())
+
+	e.GET("/modals/expenses/types/create", handlers.CreateExpenseTypeModalHandler, middlewares.Protected())
+	
 	// API
 	api := e.Group("/api")
 
@@ -76,6 +83,21 @@ func (s *Server) RegisterRoutes() http.Handler {
 	api.GET("/incomes/types/type/:id", handlers.GetIncomeType, middlewares.Protected())
 	api.PUT("/incomes/types", handlers.UpdateIncomeType, middlewares.Protected())
 	api.DELETE("/incomes/types", handlers.DeleteIncomeType, middlewares.Protected())
+
+	// Expenses
+	api.POST("/expenses", handlers.CreateExpense, middlewares.Protected())
+	api.GET("/expenses", handlers.GetAllExpenses, middlewares.Protected())
+	api.GET("/expenses/expense/:id", handlers.GetExpense, middlewares.Protected())
+	api.POST("/expenses/search", handlers.GetExpensesByDescription, middlewares.Protected())
+	api.PUT("/expenses", handlers.UpdateExpense, middlewares.Protected())
+	api.DELETE("/expenses", handlers.DeleteExpense, middlewares.Protected())
+
+	// Expenses types
+	api.POST("/expenses/types", handlers.CreateExpenseType, middlewares.Protected())
+	api.GET("/expenses/types", handlers.GetAllExpenseTypes, middlewares.Protected())
+	api.GET("/expenses/types/type/:id", handlers.GetExpenseType, middlewares.Protected())
+	api.PUT("/expenses/types", handlers.UpdateExpenseType, middlewares.Protected())
+	api.DELETE("/expenses/types", handlers.DeleteExpenseType, middlewares.Protected())
 
 	return e
 }

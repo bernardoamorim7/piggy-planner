@@ -10,10 +10,39 @@ templ Expenses() {
 				<div class="bg-primary join-item text-center rounded-lg px-4 flex flex-wrap flex-shrink items-center justify-center">
 					@icons.Search()
 				</div>
-				<input id="search" type="search" placeholder="Search expense..." class="input input-bordered w-full max-w-xs join-item text-accent" name="search" hx-post="./modules/games/search.php" hx-target="#expenses tbody" hx-trigger="input changed delay:500ms, search" hx-swap="innerHTML"/>
+				<input
+					id="search"
+					type="search"
+					placeholder="Search expenses..."
+					class="input input-bordered w-full max-w-xs join-item"
+					name="search"
+					hx-post="/api/expenses/search"
+					hx-vals='{"description": this.value}'
+					hx-target="#table-body"
+					hx-trigger="input changed delay:250ms, search"
+					hx-swap="innerHTML"
+				/>
 			</div>
 			<div class="text-center lg:text-right">
-				<button type="button" class="btn btn-success normal-case" onclick="addGameModal.showModal()">
+				<button
+					type="button"
+					class="btn btn-info normal-case"
+					hx-get="/modals/expenses/types/create"
+					hx-trigger="click"
+					hx-target="#expensesModals"
+					hx-on::after-request="document.getElementById('createExpenseTypeModal').showModal()"
+				>
+					@icons.Add()
+					Add Expense Type
+				</button>
+				<button
+					type="button"
+					class="btn btn-success normal-case"
+					hx-get="/modals/expenses/create"
+					hx-trigger="click"
+					hx-target="#expensesModals"
+					hx-on::after-request="document.getElementById('createExpenseModal').showModal()"
+				>
 					@icons.Add()
 					Add Expense
 				</button>
@@ -21,7 +50,7 @@ templ Expenses() {
 		</div>
 		<div class="divider mt-2"></div>
 		<div class="overflow-x-auto">
-			<table class="table table-xs text-accent text-center items-center align-middle break-all lg:table-lg">
+			<table class="table table-xs text-neutral text-center items-center align-middle break-all lg:table-lg">
 				<thead>
 					<tr>
 						<th>ID</th>
@@ -29,10 +58,12 @@ templ Expenses() {
 						<th>Description</th>
 						<th>Type</th>
 						<th>Date</th>
+						<th>Actions</th>
 					</tr>
 				</thead>
-				<tbody id="table-body"></tbody>
+				<tbody id="table-body" hx-get="/api/expenses" hx-trigger="load" hx-target="#table-body" hx-ext="response-targets" hx-target-404="#table-body"></tbody>
 			</table>
 		</div>
 	</main>
+	<div id="expensesModals"></div>
 }

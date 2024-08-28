@@ -1,0 +1,40 @@
+package expenses
+
+import (
+	"fmt"
+	"piggy-planner/cmd/web/components/utils"
+	"piggy-planner/cmd/web/icons"
+	"piggy-planner/internal/models"
+)
+
+templ ExpenseRow(expense models.Expense) {
+	<tr>
+		<td>{ fmt.Sprintf("%v", expense.ID) }</td>
+		<td>{ fmt.Sprintf("%v", expense.Amount) }$</td>
+		<td>{ expense.Description }</td>
+		<td>{ expense.Type.Name }</td>
+		<td>{ utils.ParseDate(expense.Date) }</td>
+		<td>
+			<button
+				type="button"
+				class="btn btn-sm btn-warning"
+				hx-get={ fmt.Sprintf("/modals/expenses/update/%v", expense.ID) }
+				hx-trigger="click"
+				hx-target="#expensesModals"
+				hx-on::after-request="document.getElementById('updateExpenseModal').showModal()"
+			>
+				@icons.Edit()
+			</button>
+			<button
+				type="button"
+				class="btn btn-sm btn-error"
+				hx-get={ fmt.Sprintf("/modals/expenses/delete/%v", expense.ID) }
+				hx-trigger="click"
+				hx-target="#expensesModals"
+				hx-on::after-request="document.getElementById('deleteExpenseModal').showModal()"
+			>
+				@icons.Delete()
+			</button>
+		</td>
+	</tr>
+}

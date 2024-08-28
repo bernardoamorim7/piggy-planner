@@ -1,0 +1,13 @@
+package expenses
+
+import (
+	"fmt"
+	"piggy-planner/internal/models"
+)
+
+templ ExpenseTypesOptions(expensesTypes []models.ExpenseType) {
+	<option value="0" default disabled selected>Select Expense Type</option>
+	for _, expenseType := range expensesTypes {
+		<option value={ fmt.Sprintf("%v", expenseType.ID) }>{ expenseType.Name }</option>
+	}
+}

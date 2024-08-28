@@ -5,7 +5,7 @@ import (
 	"strconv"
 	"time"
 
-	incomeComponents "piggy-planner/cmd/web/components/incomes"
+	incomesComponents "piggy-planner/cmd/web/components/incomes"
 	"piggy-planner/internal/database"
 	"piggy-planner/internal/models"
 	"piggy-planner/internal/services"
@@ -41,7 +41,7 @@ func CreateIncome(c echo.Context) error {
 
 	db := database.New()
 
-	incomeService := services.NewIncomeService(db)
+	incomeService := services.NewIncomesService(db)
 
 	income := &models.Income{
 		UserID:      userId,
@@ -65,7 +65,7 @@ func GetAllIncomes(c echo.Context) error {
 
 	db := database.New()
 
-	incomeService := services.NewIncomeService(db)
+	incomeService := services.NewIncomesService(db)
 
 	incomes, err := incomeService.GetAll(userId)
 	if err != nil {
@@ -77,7 +77,7 @@ func GetAllIncomes(c echo.Context) error {
 	}
 
 	for i := range incomes {
-		_ = render(c, http.StatusOK, incomeComponents.IncomeRow(incomes[i]))
+		_ = render(c, http.StatusOK, incomesComponents.IncomeRow(incomes[i]))
 	}
 
 	return nil
@@ -92,14 +92,14 @@ func GetIncome(c echo.Context) error {
 
 	db := database.New()
 
-	incomeService := services.NewIncomeService(db)
+	incomeService := services.NewIncomesService(db)
 
 	income, err := incomeService.GetByID(id)
 	if err != nil {
 		return err
 	}
 
-	_ = render(c, http.StatusOK, incomeComponents.IncomeRow(*income))
+	_ = render(c, http.StatusOK, incomesComponents.IncomeRow(*income))
 
 	return nil
 }
@@ -109,7 +109,7 @@ func GetIncomesByDescription(c echo.Context) error {
 
 	db := database.New()
 
-	incomeService := services.NewIncomeService(db)
+	incomeService := services.NewIncomesService(db)
 
 	var (
 		incomes []models.Income
@@ -126,7 +126,7 @@ func GetIncomesByDescription(c echo.Context) error {
 		incomes, err = incomeService.GetByDescription(description)
 		if err != nil {
 			if err.Error() == "Income not found" {
-				_ = render(c, http.StatusNotFound, incomeComponents.NotFoundIncomes())
+				_ = render(c, http.StatusNotFound, incomesComponents.NotFoundIncomes())
 				return nil
 			} else {
 				return err
@@ -135,12 +135,12 @@ func GetIncomesByDescription(c echo.Context) error {
 	}
 
 	if len(incomes) == 0 {
-		_ = render(c, http.StatusNotFound, incomeComponents.NotFoundIncomes())
+		_ = render(c, http.StatusNotFound, incomesComponents.NotFoundIncomes())
 		return nil
 	}
 
 	for i := range incomes {
-		_ = render(c, http.StatusOK, incomeComponents.IncomeRow(incomes[i]))
+		_ = render(c, http.StatusOK, incomesComponents.IncomeRow(incomes[i]))
 	}
 
 	return nil
@@ -173,7 +173,7 @@ func UpdateIncome(c echo.Context) error {
 	}
 
 	dateStr := c.FormValue("date")
-	
+
 	var date time.Time
 	if dateStr != "0000-00-00" {
 		date, err = time.Parse("2006-01-02", dateStr)
@@ -186,7 +186,7 @@ func UpdateIncome(c echo.Context) error {
 
 	db := database.New()
 
-	incomeService := services.NewIncomeService(db)
+	incomeService := services.NewIncomesService(db)
 
 	income := &models.Income{
 		ID:          id,
@@ -215,7 +215,7 @@ func DeleteIncome(c echo.Context) error {
 
 	db := database.New()
 
-	incomeService := services.NewIncomeService(db)
+	incomeService := services.NewIncomesService(db)
 
 	err = incomeService.Delete(id)
 	if err != nil {
@@ -233,7 +233,7 @@ func CreateIncomeType(c echo.Context) error {
 
 	db := database.New()
 
-	incomeTypeService := services.NewIncomeTypeService(db)
+	incomeTypeService := services.NewIncomeTypesService(db)
 
 	incomeType := &models.IncomeType{
 		Name: name,
@@ -253,14 +253,14 @@ func GetAllIncomeTypes(c echo.Context) error {
 
 	db := database.New()
 
-	incomeTypeService := services.NewIncomeTypeService(db)
+	incomeTypeService := services.NewIncomeTypesService(db)
 
 	incomeTypes, err := incomeTypeService.GetAll(userId)
 	if err != nil {
 		return err
 	}
 
-	return render(c, http.StatusOK, incomeComponents.IncomeTypesOptions(incomeTypes))
+	return render(c, http.StatusOK, incomesComponents.IncomeTypesOptions(incomeTypes))
 }
 
 func GetIncomeType(c echo.Context) error {
@@ -272,7 +272,7 @@ func GetIncomeType(c echo.Context) error {
 
 	db := database.New()
 
-	incomeTypeService := services.NewIncomeTypeService(db)
+	incomeTypeService := services.NewIncomeTypesService(db)
 
 	incomeType, err := incomeTypeService.GetByID(id)
 	if err != nil {
@@ -294,7 +294,7 @@ func UpdateIncomeType(c echo.Context) error {
 
 	db := database.New()
 
-	incomeTypeService := services.NewIncomeTypeService(db)
+	incomeTypeService := services.NewIncomeTypesService(db)
 
 	incomeType := &models.IncomeType{
 		ID:   incomeTypeId,
@@ -326,7 +326,7 @@ func DeleteIncomeType(c echo.Context) error {
 
 	db := database.New()
 
-	incomeTypeService := services.NewIncomeTypeService(db)
+	incomeTypeService := services.NewIncomeTypesService(db)
 
 	err = incomeTypeService.Delete(incomeTypeId)
 	if err != nil {
@@ -338,7 +338,7 @@ func DeleteIncomeType(c echo.Context) error {
 }
 
 func CreateIncomeModalHandler(c echo.Context) error {
-	return render(c, http.StatusOK, incomeComponents.CreateIncomeModal())
+	return render(c, http.StatusOK, incomesComponents.CreateIncomeModal())
 }
 
 func UpdateIncomeModalHandler(c echo.Context) error {
@@ -350,14 +350,14 @@ func UpdateIncomeModalHandler(c echo.Context) error {
 
 	db := database.New()
 
-	incomeService := services.NewIncomeService(db)
+	incomeService := services.NewIncomesService(db)
 
 	income, err := incomeService.GetByID(incomeID)
 	if err != nil {
 		return err
 	}
 
-	return render(c, http.StatusOK, incomeComponents.UpdateIncomeModal(*income))
+	return render(c, http.StatusOK, incomesComponents.UpdateIncomeModal(*income))
 }
 
 func DeleteIncomeModalHandler(c echo.Context) error {
@@ -367,9 +367,9 @@ func DeleteIncomeModalHandler(c echo.Context) error {
 		return err
 	}
 
-	return render(c, http.StatusOK, incomeComponents.DeleteIncomeModal(incomeID))
+	return render(c, http.StatusOK, incomesComponents.DeleteIncomeModal(incomeID))
 }
 
 func CreateIncomeTypeModalHandler(c echo.Context) error {
-	return render(c, http.StatusOK, incomeComponents.CreateIncomeTypeModal())
+	return render(c, http.StatusOK, incomesComponents.CreateIncomeTypeModal())
 }

@@ -13,7 +13,7 @@ templ Incomes() {
 				<input
 					id="search"
 					type="search"
-					placeholder="Search income..."
+					placeholder="Search incomes..."
 					class="input input-bordered w-full max-w-xs join-item"
 					name="search"
 					hx-post="/api/incomes/search"
@@ -29,7 +29,7 @@ templ Incomes() {
 					class="btn btn-info normal-case"
 					hx-get="/modals/incomes/types/create"
 					hx-trigger="click"
-					hx-target="#incomeModals"
+					hx-target="#incomesModals"
 					hx-on::after-request="document.getElementById('createIncomeTypeModal').showModal()"
 				>
 					@icons.Add()
@@ -40,7 +40,7 @@ templ Incomes() {
 					class="btn btn-success normal-case"
 					hx-get="/modals/incomes/create"
 					hx-trigger="click"
-					hx-target="#incomeModals"
+					hx-target="#incomesModals"
 					hx-on::after-request="document.getElementById('createIncomeModal').showModal()"
 				>
 					@icons.Add()
@@ -65,5 +65,5 @@ templ Incomes() {
 			</table>
 		</div>
 	</main>
-	<div id="incomeModals"></div>
+	<div id="incomesModals"></div>
 }

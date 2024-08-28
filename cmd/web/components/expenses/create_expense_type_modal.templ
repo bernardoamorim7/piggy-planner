@@ -1,19 +1,19 @@
-package incomes
+package expenses
 
 import "piggy-planner/cmd/web/icons"
 
-// Create Income Type Modal
-templ CreateIncomeTypeModal() {
-	<dialog id="createIncomeTypeModal" class="modal modal-bottom sm:modal-middle">
+// Create Expense Type Modal
+templ CreateExpenseTypeModal() {
+	<dialog id="createExpenseTypeModal" class="modal modal-bottom sm:modal-middle">
 		<div class="modal-box">
 			<h3 class="text-lg font-bold">
-				Add Income Type
+				Add Expense Type
 			</h3>
 			<p class="py-4"></p>
 			<form
-				id="addIncomeTypeForm"
+				id="addExpenseTypeForm"
 				class="flex flex-col gap-4"
-				hx-post="/api/incomes/types"
+				hx-post="/api/expenses/types"
 				hx-ext="response-targets"
 				hx-target-error="#err"
 			>
@@ -30,7 +30,7 @@ templ CreateIncomeTypeModal() {
 						@icons.Close()
 					</button>
 				</form>
-				<button class="btn btn-success" type="submit" form="addIncomeTypeForm">
+				<button class="btn btn-success" type="submit" form="addExpenseTypeForm">
 					Add
 					@icons.Add()
 				</button>

@@ -7,7 +7,7 @@ import (
 	"time"
 )
 
-type IncomeService interface {
+type IncomesService interface {
 	// Create a income in the database
 	Create(income *models.Income) error
 	// Get all incomes from the database for a specific user
@@ -22,17 +22,17 @@ type IncomeService interface {
 	Delete(id uint64) error
 }
 
-type incomeService struct {
+type incomesService struct {
 	DB database.Service
 }
 
-func NewIncomeService(db database.Service) IncomeService {
-	return &incomeService{
+func NewIncomesService(db database.Service) IncomesService {
+	return &incomesService{
 		DB: db,
 	}
 }
 
-func (s *incomeService) Create(income *models.Income) error {
+func (s *incomesService) Create(income *models.Income) error {
 	if income.Amount == 0 {
 		return errors.New("Missing income amount")
 	}
@@ -60,7 +60,7 @@ func (s *incomeService) Create(income *models.Income) error {
 	return nil
 }
 
-func (s *incomeService) GetAll(fkUserId uint64) ([]models.Income, error) {
+func (s *incomesService) GetAll(fkUserId uint64) ([]models.Income, error) {
 	query := `
     SELECT 
         incomes.id, 
@@ -121,7 +121,7 @@ func (s *incomeService) GetAll(fkUserId uint64) ([]models.Income, error) {
 	return incomes, nil
 }
 
-func (s *incomeService) GetByID(id uint64) (*models.Income, error) {
+func (s *incomesService) GetByID(id uint64) (*models.Income, error) {
 	query := `SELECT 
 						incomes.id, 
 						incomes.fk_user_id, 
@@ -171,7 +171,7 @@ func (s *incomeService) GetByID(id uint64) (*models.Income, error) {
 	return &income, nil
 }
 
-func (s *incomeService) GetByDescription(description string) ([]models.Income, error) {
+func (s *incomesService) GetByDescription(description string) ([]models.Income, error) {
 	query := `SELECT 
 						incomes.id, 
 						incomes.fk_user_id, 
@@ -235,7 +235,7 @@ func (s *incomeService) GetByDescription(description string) ([]models.Income, e
 	return incomes, nil
 }
 
-func (s *incomeService) Update(income *models.Income) error {
+func (s *incomesService) Update(income *models.Income) error {
 	if income.Amount == 0 {
 		return errors.New("Missing income amount")
 	}
@@ -267,7 +267,7 @@ func (s *incomeService) Update(income *models.Income) error {
 	return nil
 }
 
-func (s *incomeService) Delete(id uint64) error {
+func (s *incomesService) Delete(id uint64) error {
 	query := "DELETE FROM incomes WHERE id = ?"
 
 	stmt, err := s.DB.Prepare(query)
@@ -283,8 +283,8 @@ func (s *incomeService) Delete(id uint64) error {
 	return nil
 }
 
-// IncomeTypeService represents a service for managing income types.
-type IncomeTypeService interface {
+// IncomeTypesService represents a service for managing income types.
+type IncomeTypesService interface {
 	// Create a income type in the database
 	Create(fkUserId uint64, incomeType *models.IncomeType) error
 	// Get all income types from the database
@@ -301,7 +301,7 @@ type incomeTypeService struct {
 	DB database.Service
 }
 
-func NewIncomeTypeService(db database.Service) IncomeTypeService {
+func NewIncomeTypesService(db database.Service) IncomeTypesService {
 	return &incomeTypeService{
 		DB: db,
 	}

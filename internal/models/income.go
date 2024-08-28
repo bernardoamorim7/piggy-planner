@@ -60,8 +60,8 @@ func NewIncomeType(id uint64, name string) *IncomeType {
 }
 
 // Validate validates the income type.
-func (rt *IncomeType) Validate() error {
-	if len(rt.Name) == 0 {
+func (it *IncomeType) Validate() error {
+	if len(it.Name) == 0 {
 		return errors.New("Name cannot be empty")
 	}
 
