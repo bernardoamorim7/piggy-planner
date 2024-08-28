@@ -229,7 +229,7 @@ func (s *expensesService) GetByDescription(description string) ([]models.Expense
 	}
 
 	if len(expenses) == 0 {
-		return nil, errors.New("Expense not found")
+		return nil, errors.New("Expenses not found")
 	}
 
 	return expenses, nil

@@ -73,7 +73,8 @@ func GetAllExpenses(c echo.Context) error {
 	}
 
 	if len(expenses) == 0 {
-		return c.HTML(http.StatusOK, "No incomes found")
+		_ = render(c, http.StatusNotFound, expensesComponents.NotFoundExpenses())
+		return nil
 	}
 
 	for i := range expenses {

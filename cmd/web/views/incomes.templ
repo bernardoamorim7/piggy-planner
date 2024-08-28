@@ -21,6 +21,8 @@ templ Incomes() {
 					hx-target="#table-body"
 					hx-trigger="input changed delay:250ms, search"
 					hx-swap="innerHTML"
+					hx-ext="response-targets"
+					hx-target-404="#table-body"
 				/>
 			</div>
 			<div class="text-center lg:text-right">
