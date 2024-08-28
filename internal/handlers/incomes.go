@@ -41,7 +41,7 @@ func CreateIncome(c echo.Context) error {
 
 	db := database.New()
 
-	incomeService := services.NewIncomesService(db)
+	incomesService := services.NewIncomesService(db)
 
 	income := &models.Income{
 		UserID:      userId,
@@ -51,7 +51,7 @@ func CreateIncome(c echo.Context) error {
 		Date:        date,
 	}
 
-	err = incomeService.Create(income)
+	err = incomesService.Create(income)
 	if err != nil {
 		return err
 	}
@@ -65,9 +65,9 @@ func GetAllIncomes(c echo.Context) error {
 
 	db := database.New()
 
-	incomeService := services.NewIncomesService(db)
+	incomesService := services.NewIncomesService(db)
 
-	incomes, err := incomeService.GetAll(userId)
+	incomes, err := incomesService.GetAll(userId)
 	if err != nil {
 		return err
 	}
@@ -93,9 +93,9 @@ func GetIncome(c echo.Context) error {
 
 	db := database.New()
 
-	incomeService := services.NewIncomesService(db)
+	incomesService := services.NewIncomesService(db)
 
-	income, err := incomeService.GetByID(id)
+	income, err := incomesService.GetByID(id)
 	if err != nil {
 		return err
 	}
@@ -110,7 +110,7 @@ func GetIncomesByDescription(c echo.Context) error {
 
 	db := database.New()
 
-	incomeService := services.NewIncomesService(db)
+	incomesService := services.NewIncomesService(db)
 
 	var (
 		incomes []models.Income
@@ -119,12 +119,12 @@ func GetIncomesByDescription(c echo.Context) error {
 
 	if description == "" {
 		userID := c.Get("userID").(uint64)
-		incomes, err = incomeService.GetAll(userID)
+		incomes, err = incomesService.GetAll(userID)
 		if err != nil {
 			return err
 		}
 	} else {
-		incomes, err = incomeService.GetByDescription(description)
+		incomes, err = incomesService.GetByDescription(description)
 		if err != nil {
 			if err.Error() == "Income not found" {
 				_ = render(c, http.StatusNotFound, incomesComponents.NotFoundIncomes())
@@ -187,7 +187,7 @@ func UpdateIncome(c echo.Context) error {
 
 	db := database.New()
 
-	incomeService := services.NewIncomesService(db)
+	incomesService := services.NewIncomesService(db)
 
 	income := &models.Income{
 		ID:          id,
@@ -198,7 +198,7 @@ func UpdateIncome(c echo.Context) error {
 		Date:        date,
 	}
 
-	err = incomeService.Update(income)
+	err = incomesService.Update(income)
 	if err != nil {
 		return err
 	}
@@ -216,9 +216,9 @@ func DeleteIncome(c echo.Context) error {
 
 	db := database.New()
 
-	incomeService := services.NewIncomesService(db)
+	incomesService := services.NewIncomesService(db)
 
-	err = incomeService.Delete(id)
+	err = incomesService.Delete(id)
 	if err != nil {
 		return err
 	}
@@ -351,9 +351,9 @@ func UpdateIncomeModalHandler(c echo.Context) error {
 
 	db := database.New()
 
-	incomeService := services.NewIncomesService(db)
+	incomesService := services.NewIncomesService(db)
 
-	income, err := incomeService.GetByID(incomeID)
+	income, err := incomesService.GetByID(incomeID)
 	if err != nil {
 		return err
 	}
