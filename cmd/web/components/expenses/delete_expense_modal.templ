@@ -20,7 +20,7 @@ templ DeleteExpenseModal(expenseID uint64) {
 			<div class="modal-action items-center content-center justify-center">
 				<form method="dialog">
 					<button
-						class="btn btn-error normal-case"
+						class="btn btn-error normal-case rounded-lg"
 					>
 						Cancel
 						@icons.Close()
@@ -33,7 +33,7 @@ templ DeleteExpenseModal(expenseID uint64) {
 					<input type="hidden" name="id" value={ fmt.Sprintf("%v", expenseID) }/>
 					<button
 						type="submit"
-						class="btn btn-success"
+						class="btn btn-success rounded-lg"
 					>
 						Delete
 						@icons.Delete()

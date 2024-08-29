@@ -27,19 +27,19 @@ templ UpdateExpenseModal(expense models.Expense) {
 				<input type="hidden" name="oldDescription" value={ expense.Description }/>
 				<input type="hidden" name="oldExpenseType" value={ fmt.Sprintf("%v", expense.Type.ID) }/>
 				<input type="hidden" name="oldDate" value={ fmt.Sprintf("%v", expense.Date) }/>
-				<label class="input input-bordered flex items-center gap-2">
+				<label class="input input-bordered flex items-center gap-2 rounded-lg">
 					@icons.Money()
 					<input type="number" step="0.01" min="0" class="grow" placeholder="Amount" name="amount" value={ fmt.Sprintf("%v", expense.Amount) } required/>
 				</label>
-				<label class="input input-bordered flex items-center gap-2">
+				<label class="input input-bordered flex items-center gap-2 rounded-lg">
 					@icons.Description()
 					<input type="text" class="grow" placeholder="Description" name="description" value={ expense.Description } required/>
 				</label>
-				<label class="input input-bordered flex items-center gap-2" hx-get="/api/expenses/types" hx-trigger="load" hx-target="#expenseType">
+				<label class="input input-bordered flex items-center gap-2 rounded-lg" hx-get="/api/expenses/types" hx-trigger="load" hx-target="#expenseType">
 					@icons.Receipt()
 					<select id="expenseType" class="grow" name="expenseType" required value={ fmt.Sprintf("%v", expense.Type.ID) }></select>
 				</label>
-				<label class="input input-bordered flex items-center gap-2">
+				<label class="input input-bordered flex items-center gap-2 rounded-lg">
 					@icons.Calendar()
 					<input type="date" class="grow" name="date" value={ utils.ParseDate(expense.Date) }/>
 				</label>
@@ -47,12 +47,12 @@ templ UpdateExpenseModal(expense models.Expense) {
 			</form>
 			<div class="modal-action">
 				<form method="dialog">
-					<button class="btn btn-error">
+					<button class="btn btn-error rounded-lg">
 						Cancel
 						@icons.Close()
 					</button>
 				</form>
-				<button class="btn btn-success" type="submit" form="updateExpenseForm">
+				<button class="btn btn-success rounded-lg" type="submit" form="updateExpenseForm">
 					Update
 					@icons.Upgrade()
 				</button>

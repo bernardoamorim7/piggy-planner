@@ -14,7 +14,7 @@ templ Expenses() {
 					id="search"
 					type="search"
 					placeholder="Search expenses..."
-					class="input input-bordered w-full max-w-xs join-item"
+					class="input input-bordered w-full max-w-xs join-item rounded-lg"
 					name="search"
 					hx-post="/api/expenses/search"
 					hx-vals='{"description": this.value}'
@@ -28,7 +28,7 @@ templ Expenses() {
 			<div class="text-center lg:text-right">
 				<button
 					type="button"
-					class="btn btn-info normal-case"
+					class="btn btn-info normal-case rounded-lg"
 					hx-get="/modals/expenses/types/create"
 					hx-trigger="click"
 					hx-target="#expensesModals"
@@ -39,7 +39,7 @@ templ Expenses() {
 				</button>
 				<button
 					type="button"
-					class="btn btn-success normal-case"
+					class="btn btn-success normal-case rounded-lg"
 					hx-get="/modals/expenses/create"
 					hx-trigger="click"
 					hx-target="#expensesModals"

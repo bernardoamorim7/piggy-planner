@@ -17,7 +17,7 @@ templ IncomeRow(income models.Income) {
 		<td>
 			<button
 				type="button"
-				class="btn btn-sm btn-warning"
+				class="btn btn-sm btn-warning rounded-lg"
 				hx-get={ fmt.Sprintf("/modals/incomes/update/%v", income.ID) }
 				hx-trigger="click"
 				hx-target="#incomesModals"
@@ -27,7 +27,7 @@ templ IncomeRow(income models.Income) {
 			</button>
 			<button
 				type="button"
-				class="btn btn-sm btn-error"
+				class="btn btn-sm btn-error rounded-lg"
 				hx-get={ fmt.Sprintf("/modals/incomes/delete/%v", income.ID) }
 				hx-trigger="click"
 				hx-target="#incomesModals"

@@ -17,7 +17,7 @@ templ ExpenseRow(expense models.Expense) {
 		<td>
 			<button
 				type="button"
-				class="btn btn-sm btn-warning"
+				class="btn btn-sm btn-warning rounded-lg"
 				hx-get={ fmt.Sprintf("/modals/expenses/update/%v", expense.ID) }
 				hx-trigger="click"
 				hx-target="#expensesModals"
@@ -27,7 +27,7 @@ templ ExpenseRow(expense models.Expense) {
 			</button>
 			<button
 				type="button"
-				class="btn btn-sm btn-error"
+				class="btn btn-sm btn-error rounded-lg"
 				hx-get={ fmt.Sprintf("/modals/expenses/delete/%v", expense.ID) }
 				hx-trigger="click"
 				hx-target="#expensesModals"
