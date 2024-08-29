@@ -32,6 +32,14 @@ func GetSessionVars() echo.MiddlewareFunc {
 				}
 			}
 
+			if sess.Values["email"] != nil {
+				if value, ok := sess.Values["email"].(string); ok {
+					c.Set("email", value)
+				} else {
+					slog.WarnContext(c.Request().Context(), "email is not of type string ("+fmt.Sprintf("%T", sess.Values["email"])+")")
+				}
+			}
+
 			if sess.Values["avatar"] != nil {
 				if value, ok := sess.Values["avatar"].(string); ok {
 					c.Set("avatar", value)

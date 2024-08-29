@@ -48,10 +48,10 @@ func (s *Server) RegisterRoutes() http.Handler {
 
 	// Views
 	e.GET("/profile", handlers.ProfileHandler, middlewares.Protected())
-	e.GET("/settings", handlers.SettingsHandler, middlewares.Protected())
+	//e.GET("/settings", handlers.SettingsHandler, middlewares.Protected())
 	e.GET("/incomes", handlers.IncomesHandler, middlewares.Protected())
 	e.GET("/expenses", handlers.ExpensesHandler, middlewares.Protected())
-	e.GET("/objectives", handlers.ObjectivesHandler, middlewares.Protected())
+	//e.GET("/objectives", handlers.ObjectivesHandler, middlewares.Protected())
 
 	// Modals
 	e.GET("/modals/incomes/create", handlers.CreateIncomeModalHandler, middlewares.Protected())

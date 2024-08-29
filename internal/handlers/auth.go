@@ -44,6 +44,7 @@ func Login(c echo.Context) error {
 	sess.Values["authenticated"] = true
 	sess.Values["userID"] = user.ID
 	sess.Values["name"] = user.Name
+	sess.Values["email"] = user.Email
 	sess.Values["avatar"] = user.Avatar
 	err = sess.Save(c.Request(), c.Response())
 	if err != nil {
