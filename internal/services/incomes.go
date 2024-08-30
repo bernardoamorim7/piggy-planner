@@ -16,6 +16,8 @@ type IncomesService interface {
 	GetByID(id uint64) (*models.Income, error)
 	// Get a income by description from the database
 	GetByDescription(description string) ([]models.Income, error)
+	// Get all incomes during a specific period
+	GetByPeriod(fkUserId uint64, startDate time.Time, endDate time.Time) ([]models.Income, error)
 	// Update a income in the database
 	Update(income *models.Income) error
 	// Delete a income by ID from the database
@@ -230,6 +232,70 @@ func (s *incomesService) GetByDescription(description string) ([]models.Income, 
 
 	if len(incomes) == 0 {
 		return nil, errors.New("Income not found")
+	}
+
+	return incomes, nil
+}
+
+func (s *incomesService) GetByPeriod(fkUserId uint64, startDate time.Time, endDate time.Time) ([]models.Income, error) {
+	query := `
+	SELECT
+		incomes.id,
+		incomes.fk_user_id,
+		incomes.amount,
+		incomes.description,
+		income_types.id AS income_type_id,
+		income_types.name AS income_type_name,
+		incomes.date
+	FROM
+		incomes
+	INNER JOIN
+		income_types
+	ON
+		incomes.fk_income_type_id = income_types.id
+	WHERE
+		incomes.fk_user_id = ?
+	AND
+		incomes.date >= ?
+	AND
+		incomes.date <= ?
+	ORDER BY
+		incomes.date DESC
+	`
+
+	stmt, err := s.DB.Prepare(query)
+	if err != nil {
+		return nil, err
+	}
+
+	rows, err := stmt.Query(fkUserId, startDate, endDate)
+	if err != nil {
+		return nil, err
+	}
+
+	var incomes []models.Income
+	for rows.Next() {
+		var income models.Income
+		var incomeType models.IncomeType
+		var date []byte
+
+		err := rows.Scan(&income.ID, &income.UserID, &income.Amount, &income.Description, &incomeType.ID, &incomeType.Name, &date)
+		if err != nil {
+			return nil, err
+		}
+
+		if string(date) != "0000-00-00" {
+			income.Date, err = time.Parse("2006-01-02", string(date))
+			if err != nil {
+				return nil, err
+			}
+		} else {
+			income.Date = time.Time{}
+		}
+
+		income.Type = incomeType
+
+		incomes = append(incomes, income)
 	}
 
 	return incomes, nil

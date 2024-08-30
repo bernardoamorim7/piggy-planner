@@ -16,7 +16,7 @@ templ Dashboard() {
 					@icons.AccountBalance()
 				</div>
 				<div class="stat-title">Balance</div>
-				<div class="stat-value text-primary"></div>
+				<div class="stat-value text-primary" hx-get="/api/stats/balance" hx-trigger="load"></div>
 			</div>
 		</div>
 		<div class="stats shadow bg-base-200">
@@ -24,8 +24,8 @@ templ Dashboard() {
 				<div class="stat-figure text-primary">
 					@icons.Payments()
 				</div>
-				<div class="stat-title">Debt</div>
-				<div class="stat-value text-primary"></div>
+				<div class="stat-title">Total Expenses</div>
+				<div class="stat-value text-primary" hx-get="/api/stats/total-expenses" hx-trigger="load"></div>
 			</div>
 		</div>
 		<div class="stats shadow bg-base-200">
@@ -34,8 +34,7 @@ templ Dashboard() {
 					@icons.Money()
 				</div>
 				<div class="stat-title">{ currentMonth }'s income</div>
-				<div class="stat-value text-primary"></div>
-				<div class="stat-desc">Last Month</div>
+				<div class="stat-value text-primary" hx-get="/api/stats/current-month-incomes" hx-trigger="load"></div>
 			</div>
 		</div>
 		<div class="stats shadow bg-base-200">
@@ -44,8 +43,7 @@ templ Dashboard() {
 					@icons.Payments()
 				</div>
 				<div class="stat-title">{ currentMonth }'s expenses</div>
-				<div class="stat-value text-primary"></div>
-				<div class="stat-desc">Last Month</div>
+				<div class="stat-value text-primary" hx-get="/api/stats/current-month-expenses" hx-trigger="load"></div>
 			</div>
 		</div>
 	</div>
@@ -54,22 +52,22 @@ templ Dashboard() {
 		<div class="card w-full p-6 bg-base-200 shadow-xl mt-6">
 			<div class="text-xl font-semibold ">Incomes</div>
 			<div class="divider mt-2"></div>
-			<div class="h-full w-full pb-6 bg-base-200"><canvas id="incomeChart"></canvas></div>
+			<div class="h-full w-full pb-6 bg-base-200" hx-get="/api/stats/incomes-chart" hx-trigger="load"></div>
 		</div>
 		<div class="card w-full p-6 bg-base-200 shadow-xl mt-6">
 			<div class="text-xl font-semibold ">Expenses</div>
 			<div class="divider mt-2"></div>
-			<div class="h-full w-full pb-6 bg-base-200"><canvas id="expensesChart"></canvas></div>
+			<div class="h-full w-full pb-6 bg-base-200" hx-get="/api/stats/expenses-chart" hx-trigger="load"></div>
 		</div>
-		<div class="card w-full p-6 bg-base-200 shadow-xl mt-6">
-			<div class="text-xl font-semibold ">Objectives</div>
-			<div class="divider mt-2"></div>
-			<div class="h-full w-full pb-6 bg-base-200"><canvas id="objectivesChart"></canvas></div>
-		</div>
-		<div class="card w-full p-6 bg-base-200 shadow-xl mt-6">
-			<div class="text-xl font-semibold ">Debt</div>
-			<div class="divider mt-2"></div>
-			<div class="h-full w-full pb-6 bg-base-200"><canvas id="debtChart"></canvas></div>
-		</div>
+		// <div class="card w-full p-6 bg-base-200 shadow-xl mt-6">
+		// 	<div class="text-xl font-semibold ">Objectives</div>
+		// 	<div class="divider mt-2"></div>
+		// 	<div class="h-full w-full pb-6 bg-base-200"><canvas id="objectivesChart"></canvas></div>
+		// </div>
+		// <div class="card w-full p-6 bg-base-200 shadow-xl mt-6">
+		// 	<div class="text-xl font-semibold ">Debt</div>
+		// 	<div class="divider mt-2"></div>
+		// 	<div class="h-full w-full pb-6 bg-base-200"><canvas id="debtChart"></canvas></div>
+		// </div>
 	</div>
 }

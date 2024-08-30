@@ -59,13 +59,13 @@ func (s *Server) RegisterRoutes() http.Handler {
 	e.GET("/modals/incomes/delete/:id", handlers.DeleteIncomeModalHandler, middlewares.Protected())
 
 	e.GET("/modals/incomes/types/create", handlers.CreateIncomeTypeModalHandler, middlewares.Protected())
-	
+
 	e.GET("/modals/expenses/create", handlers.CreateExpenseModalHandler, middlewares.Protected())
 	e.GET("/modals/expenses/update/:id", handlers.UpdateExpenseModalHandler, middlewares.Protected())
 	e.GET("/modals/expenses/delete/:id", handlers.DeleteExpenseModalHandler, middlewares.Protected())
 
 	e.GET("/modals/expenses/types/create", handlers.CreateExpenseTypeModalHandler, middlewares.Protected())
-	
+
 	// API
 	api := e.Group("/api")
 
@@ -98,6 +98,32 @@ func (s *Server) RegisterRoutes() http.Handler {
 	api.GET("/expenses/types/type/:id", handlers.GetExpenseType, middlewares.Protected())
 	api.PUT("/expenses/types", handlers.UpdateExpenseType, middlewares.Protected())
 	api.DELETE("/expenses/types", handlers.DeleteExpenseType, middlewares.Protected())
+
+	// Objectives
+	//api.POST("/objectives", handlers.CreateObjective, middlewares.Protected())
+	//api.GET("/objectives", handlers.GetAllObjectives, middlewares.Protected())
+	//api.GET("/objectives/objective/:id", handlers.GetObjective, middlewares.Protected())
+	//api.PUT("/objectives", handlers.UpdateObjective, middlewares.Protected())
+	//api.DELETE("/objectives", handlers.DeleteObjective, middlewares.Protected())
+
+	// Objectives types
+	//api.POST("/objectives/types", handlers.CreateObjectiveType, middlewares.Protected())
+	//api.GET("/objectives/types", handlers.GetAllObjectiveTypes, middlewares.Protected())
+	//api.GET("/objectives/types/type/:id", handlers.GetObjectiveType, middlewares.Protected())
+	//api.PUT("/objectives/types", handlers.UpdateObjectiveType, middlewares.Protected())
+	//api.DELETE("/objectives/types", handlers.DeleteObjectiveType, middlewares.Protected())
+
+	// Dasbhboard Stats
+	// Stat cards
+	api.GET("/stats/balance", handlers.BalanceHandler, middlewares.Protected())
+	//api.GET("/stats/debt", handlers.DebtHandler, middlewares.Protected())
+	api.GET("/stats/total-expenses", handlers.TotalExpensesHandler, middlewares.Protected())
+	api.GET("/stats/current-month-incomes", handlers.CurrentMonthIncomesHandler, middlewares.Protected())
+	api.GET("/stats/current-month-expenses", handlers.CurrentMonthExpensesHandler, middlewares.Protected())
+
+	// Charts
+	api.GET("/stats/incomes-chart", handlers.IncomesChartHandler, middlewares.Protected())
+	api.GET("/stats/expenses-chart", handlers.ExpensesChartHandler, middlewares.Protected())
 
 	return e
 }

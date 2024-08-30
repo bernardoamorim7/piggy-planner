@@ -16,6 +16,8 @@ type ExpensesService interface {
 	GetByID(id uint64) (*models.Expense, error)
 	// Get a expense by description from the database
 	GetByDescription(description string) ([]models.Expense, error)
+	// Get all expenses during a specific period
+	GetByPeriod(fkUserId uint64, startDate time.Time, endDate time.Time) ([]models.Expense, error)
 	// Update a expense in the database
 	Update(expense *models.Expense) error
 	// Delete a expense by ID from the database
@@ -230,6 +232,70 @@ func (s *expensesService) GetByDescription(description string) ([]models.Expense
 
 	if len(expenses) == 0 {
 		return nil, errors.New("Expenses not found")
+	}
+
+	return expenses, nil
+}
+
+func (s *expensesService) GetByPeriod(fkUserId uint64, startDate time.Time, endDate time.Time) ([]models.Expense, error) {
+	query := `
+	SELECT
+		expenses.id,
+		expenses.fk_user_id,
+		expenses.amount,
+		expenses.description,
+		expense_types.id AS expense_type_id,
+		expense_types.name AS expense_type_name,
+		expenses.date
+	FROM
+		expenses
+	INNER JOIN
+		expense_types
+	ON
+		expenses.fk_expense_type_id = expense_types.id
+	WHERE
+		expenses.fk_user_id = ?
+	AND
+		expenses.date >= ?
+	AND
+		expenses.date <= ?
+	ORDER BY
+		expenses.date DESC
+	`
+
+	stmt, err := s.DB.Prepare(query)
+	if err != nil {
+		return nil, err
+	}
+
+	rows, err := stmt.Query(fkUserId, startDate, endDate)
+	if err != nil {
+		return nil, err
+	}
+
+	var expenses []models.Expense
+	for rows.Next() {
+		var expense models.Expense
+		var expenseType models.ExpenseType
+		var date []byte
+
+		err := rows.Scan(&expense.ID, &expense.UserID, &expense.Amount, &expense.Description, &expenseType.ID, &expenseType.Name, &date)
+		if err != nil {
+			return nil, err
+		}
+
+		if string(date) != "0000-00-00" {
+			expense.Date, err = time.Parse("2006-01-02", string(date))
+			if err != nil {
+				return nil, err
+			}
+		} else {
+			expense.Date = time.Time{}
+		}
+
+		expense.Type = expenseType
+
+		expenses = append(expenses, expense)
 	}
 
 	return expenses, nil
