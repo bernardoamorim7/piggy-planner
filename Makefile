@@ -17,6 +17,12 @@ build-release:
 	@npx tailwindcss -i ./cmd/web/assets/css/input.css -o ./cmd/web/assets/css/tailwind.css --minify
 	@go build -ldflags="-s -w" -o main cmd/api/main.go 
 
+build-release-raspberry:
+	@echo "Building..."
+	@templ generate
+	@npx tailwindcss -i ./cmd/web/assets/css/input.css -o ./cmd/web/assets/css/tailwind.css --minify
+	@GOOS=linux GOARCH=arm64 go build -ldflags="-s -w" -o main_raspberry cmd/api/main.go 
+
 # Run the application
 run:
 	@go run cmd/api/main.go
