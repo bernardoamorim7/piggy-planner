@@ -26,8 +26,8 @@ tmp/
 .env
 
 # Project build
-# main
-# main_raspberry
+main
+main_raspberry
 
 # node_modules
 node_modules
