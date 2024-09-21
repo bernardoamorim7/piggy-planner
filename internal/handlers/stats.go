@@ -1,11 +1,11 @@
 package handlers
 
 import (
+	"encoding/json"
 	"fmt"
 	"net/http"
 	"piggy-planner/internal/database"
 	"piggy-planner/internal/services"
-	"strings"
 	"time"
 
 	"github.com/labstack/echo/v4"
@@ -152,65 +152,74 @@ func IncomesChartHandler(c echo.Context) error {
 		return c.NoContent(http.StatusInternalServerError)
 	}
 
+	// Map to hold unique income types and their associated amounts
+	incomeMap := make(map[string][]float64)
+
+	for _, income := range incomes {
+		incomeMap[income.Type.Name] = append(incomeMap[income.Type.Name], income.Amount)
+	}
+
+	// Prepare labels and values for the chart
 	var labels []string
 	var values []float64
 
-	for _, income := range incomes {
-		labels = append(labels, income.Type.Name)
-		values = append(values, income.Amount)
+	for label, amounts := range incomeMap {
+		labels = append(labels, label)
+		// Sum the amounts for each income type
+		var total float64
+		for _, amount := range amounts {
+			total += amount
+		}
+		values = append(values, total)
 	}
 
-	labelsArr := strings.ReplaceAll(fmt.Sprintf("%q", labels), "\" \"", "\", \"")
-
-	var valuesStr []string
-	for _, v := range values {
-		valuesStr = append(valuesStr, fmt.Sprintf("%.2f", v))
-	}
-	valuesArr := strings.ReplaceAll(fmt.Sprintf("%q", valuesStr), "\" \"", "\",\"")
+	// Convert labels and values to JSON format for the chart
+	labelsJSON, _ := json.Marshal(labels)
+	valuesJSON, _ := json.Marshal(values)
 
 	chart := fmt.Sprintf(`
-		    <canvas id="incomesChart" width="400" height="400"></canvas>
-            <script>
-                var ctx = document.getElementById('incomesChart').getContext('2d');
-                var myChart = new Chart(ctx, {
-                    type: 'pie',
-                    data: {
-                        labels: %v,
-                        datasets: [{
-                            label: 'Incomes',
-                            data: %v,
-                            backgroundColor: [
-                                'rgba(255, 99, 132, 0.2)',
-                                'rgba(54, 162, 235, 0.2)',
-                                'rgba(255, 206, 86, 0.2)',
-                                'rgba(75, 192, 192, 0.2)',
-                                'rgba(153, 102, 255, 0.2)',
-                                'rgba(255, 159, 64, 0.2)'
-                            ],
-                            borderColor: [
-                                'rgba(255, 99, 132, 1)',
-                                'rgba(54, 162, 235, 1)',
-                                'rgba(255, 206, 86, 1)',
-                                'rgba(75, 192, 192, 1)',
-                                'rgba(153, 102, 255, 1)',
-                                'rgba(255, 159, 64, 1)'
-                            ],
-                            borderWidth: 1
-                        }]
+    <canvas id="incomesChart" width="400" height="400"></canvas>
+    <script>
+        var ctx = document.getElementById('incomesChart').getContext('2d');
+        var myChart = new Chart(ctx, {
+            type: 'pie',
+            data: {
+                labels: %s,
+                datasets: [{
+                    label: 'Incomes',
+                    data: %s,
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 0.2)',
+                        'rgba(54, 162, 235, 0.2)',
+                        'rgba(255, 206, 86, 0.2)',
+                        'rgba(75, 192, 192, 0.2)',
+                        'rgba(153, 102, 255, 0.2)',
+                        'rgba(255, 159, 64, 0.2)',
+						'rgba(140, 160, 50, 0.2)'
+                    ],
+                    borderColor: [
+                        'rgba(255, 99, 132, 1)',
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(255, 206, 86, 1)',
+                        'rgba(75, 192, 192, 1)',
+                        'rgba(153, 102, 255, 1)',
+                        'rgba(255, 159, 64, 1)',
+      					'rgba(140, 180, 50, 1)'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'top',
                     },
-                    options: {
-                        responsive: true,
-                        plugins: {
-                            legend: {
-                                position: 'top',
-                            },
-                        }
-                    }
-                });
-            </script>
-        </body>
-        </html>
-    `, labelsArr, valuesArr)
+                }
+            }
+        });
+    </script>
+`, string(labelsJSON), string(valuesJSON))
 
 	return c.HTML(http.StatusOK, chart)
 }
@@ -227,65 +236,74 @@ func ExpensesChartHandler(c echo.Context) error {
 		return c.NoContent(http.StatusInternalServerError)
 	}
 
+	// Map to hold unique income types and their associated amounts
+	expenseMap := make(map[string][]float64)
+
+	for _, expense := range expenses {
+		expenseMap[expense.Type.Name] = append(expenseMap[expense.Type.Name], expense.Amount)
+	}
+
+	// Prepare labels and values for the chart
 	var labels []string
 	var values []float64
 
-	for _, expense := range expenses {
-		labels = append(labels, expense.Type.Name)
-		values = append(values, expense.Amount)
+	for label, amounts := range expenseMap {
+		labels = append(labels, label)
+		// Sum the amounts for each expense type
+		var total float64
+		for _, amount := range amounts {
+			total += amount
+		}
+		values = append(values, total)
 	}
 
-	labelsArr := strings.ReplaceAll(fmt.Sprintf("%q", labels), "\" \"", "\", \"")
-
-	var valuesStr []string
-	for _, v := range values {
-		valuesStr = append(valuesStr, fmt.Sprintf("%.2f", v))
-	}
-	valuesArr := strings.ReplaceAll(fmt.Sprintf("%q", valuesStr), "\" \"", "\",\"")
+	// Convert labels and values to JSON format for the chart
+	labelsJSON, _ := json.Marshal(labels)
+	valuesJSON, _ := json.Marshal(values)
 
 	chart := fmt.Sprintf(`
-		    <canvas id="expensesChart" width="400" height="400"></canvas>
-            <script>
-                var ctx = document.getElementById('expensesChart').getContext('2d');
-                var myChart = new Chart(ctx, {
-                    type: 'pie',
-                    data: {
-                        labels: %v,
-                        datasets: [{
-                            label: 'Expenses',
-                            data: %v,
-                            backgroundColor: [
-                                'rgba(255, 99, 132, 0.2)',
-                                'rgba(54, 162, 235, 0.2)',
-                                'rgba(255, 206, 86, 0.2)',
-                                'rgba(75, 192, 192, 0.2)',
-                                'rgba(153, 102, 255, 0.2)',
-                                'rgba(255, 159, 64, 0.2)'
-                            ],
-                            borderColor: [
-                                'rgba(255, 99, 132, 1)',
-                                'rgba(54, 162, 235, 1)',
-                                'rgba(255, 206, 86, 1)',
-                                'rgba(75, 192, 192, 1)',
-                                'rgba(153, 102, 255, 1)',
-                                'rgba(255, 159, 64, 1)'
-                            ],
-                            borderWidth: 1
-                        }]
+    <canvas id="expensesChart" width="400" height="400"></canvas>
+    <script>
+        var ctx = document.getElementById('expensesChart').getContext('2d');
+        var myChart = new Chart(ctx, {
+            type: 'pie',
+            data: {
+                labels: %s,
+                datasets: [{
+                    label: 'Expenses',
+                    data: %s,
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 0.2)',
+                        'rgba(54, 162, 235, 0.2)',
+                        'rgba(255, 206, 86, 0.2)',
+                        'rgba(75, 192, 192, 0.2)',
+                        'rgba(153, 102, 255, 0.2)',
+                        'rgba(255, 159, 64, 0.2)',
+						'rgba(140, 160, 50, 0.2)'
+                    ],
+                    borderColor: [
+                        'rgba(255, 99, 132, 1)',
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(255, 206, 86, 1)',
+                        'rgba(75, 192, 192, 1)',
+                        'rgba(153, 102, 255, 1)',
+                        'rgba(255, 159, 64, 1)',
+      					'rgba(140, 180, 50, 1)'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'top',
                     },
-                    options: {
-                        responsive: true,
-                        plugins: {
-                            legend: {
-                                position: 'top',
-                            },
-                        }
-                    }
-                });
-            </script>
-        </body>
-        </html>
-    `, labelsArr, valuesArr)
+                }
+            }
+        });
+    </script>
+`, string(labelsJSON), string(valuesJSON))
 
 	return c.HTML(http.StatusOK, chart)
 }

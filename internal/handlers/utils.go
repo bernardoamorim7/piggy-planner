@@ -29,3 +29,15 @@ func render(ctx echo.Context, statusCode int, t templ.Component) error {
 
 	return ctx.HTML(statusCode, buf.String())
 }
+
+func removeDuplicate[T comparable](sliceList []T) []T {
+    allKeys := make(map[T]bool)
+    list := []T{}
+    for _, item := range sliceList {
+        if _, value := allKeys[item]; !value {
+            allKeys[item] = true
+            list = append(list, item)
+        }
+    }
+    return list
+}
