@@ -7,6 +7,11 @@ on:
 
 jobs:
   build:
+    permissions:
+      contents: write
+      packages: write
+      actions: write
+
     runs-on: ubuntu-latest
 
     strategy:
@@ -28,7 +33,7 @@ jobs:
         with:
           node-version: '20'
 
-      - name: Install Tailwind CSS and DaisyUI
+      - name: Install NPM dependencies
         run: npm install
 
       - name: Generate Tailwind CSS
@@ -48,8 +53,8 @@ jobs:
       - name: Upload build artifacts
         uses: actions/upload-artifact@v3
         with:
-          name: piggy-planner_${{ matrix.goos }}_${{ matrix.goarch }}_${{ github.ref }}
-          path: piggy-planner_${{ matrix.goos }}_${{ matrix.goarch }}_${{ github.ref }}
+          name: piggy-planner_${{ matrix.goos }}_${{ matrix.goarch }}_${VERSION}
+          path: piggy-planner_${{ matrix.goos }}_${{ matrix.goarch }}_${VERSION}
 
   release:
     needs: build
@@ -75,6 +80,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: piggy-planner_*
-          asset_name: piggy-planner_${{ matrix.goos }}_${{ matrix.goarch }}_${{ github.ref }}
+          asset_path: piggy-planner_${{ matrix.goos }}_${{ matrix.goarch }}_${VERSION}
+          asset_name: piggy-planner_${{ matrix.goos }}_${{ matrix.goarch }}_${VERSION}
           asset_content_type: application/octet-stream
