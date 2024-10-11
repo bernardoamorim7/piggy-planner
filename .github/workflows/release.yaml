@@ -29,8 +29,7 @@ jobs:
           node-version: '20'
 
       - name: Install Tailwind CSS and DaisyUI
-        run: |
-          npm install -g -D tailwindcss daisyui@latest
+        run: npm install
 
       - name: Generate Tailwind CSS
         run: npx tailwindcss -i ./cmd/web/assets/css/input.css -o ./cmd/web/assets/css/tailwind.css --minify
