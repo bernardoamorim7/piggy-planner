@@ -46,7 +46,7 @@ jobs:
           GOOS=${{ matrix.goos }} GOARCH=${{ matrix.goarch }} go build -ldflags="-s -w" -o piggy-planner_${{ matrix.goos }}_${{ matrix.goarch }}_${VERSION} cmd/api/main.go
 
       - name: Upload build artifacts
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: piggy-planner_${{ matrix.goos }}_${{ matrix.goarch }}_${{ github.ref }}
           path: piggy-planner_${{ matrix.goos }}_${{ matrix.goarch }}_${{ github.ref }}
