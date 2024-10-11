@@ -18,7 +18,7 @@ jobs:
         goarch: [amd64, arm64]
 
     outputs:
-      output_name: ${{ steps.set_output_name.outputs.output_name }}
+      artifacts: ${{ steps.set_output_name.outputs.artifacts }}
 
     steps:
       - name: Checkout code
@@ -54,14 +54,15 @@ jobs:
           GOOS=${{ matrix.goos }} GOARCH=${{ matrix.goarch }} go build -ldflags="-s -w" -o $OUTPUT_NAME cmd/api/main.go
           echo "output_name=$OUTPUT_NAME" >> $GITHUB_ENV
           echo "::set-output name=output_name::$OUTPUT_NAME"
+          echo "::set-output name=artifacts::${{ steps.set_output_name.outputs.artifacts }},$OUTPUT_NAME"
 
       - name: List files in directory
         run: ls -alh
 
       - name: Upload build artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v3
         with:
-          name: ${{ steps.set_output_name.outputs.output_name }}
+          name: build-artifacts
           path: ${{ steps.set_output_name.outputs.output_name }}
 
   release:
@@ -74,10 +75,19 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Download build artifacts
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v2
         with:
-          name: ${{ needs.build.outputs.output_name }}
+          name: build-artifacts
           path: ./artifacts
+
+      - name: Generate Changelog
+        id: changelog
+        run: |
+          git fetch --tags
+          PREVIOUS_TAG=$(git describe --tags $(git rev-list --tags --max-count=1))
+          echo "Previous tag: $PREVIOUS_TAG"
+          CHANGELOG=$(git log $PREVIOUS_TAG..HEAD --pretty=format:"%h - %s (%an)")
+          echo "changelog=$CHANGELOG" >> $GITHUB_ENV
 
       - name: Create Release
         id: create_release
@@ -85,4 +95,5 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          files: ./artifacts/${{ needs.build.outputs.output_name }}
+          files: ./artifacts/*
+          body: ${{ env.changelog }}
