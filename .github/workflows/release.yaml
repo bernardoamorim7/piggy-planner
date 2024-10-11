@@ -9,8 +9,6 @@ jobs:
   build:
     permissions:
       contents: write
-      packages: write
-      actions: write
 
     runs-on: ubuntu-latest
 
@@ -60,6 +58,8 @@ jobs:
 
   release:
     needs: build
+    permissions:
+      contents: write
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
