@@ -55,6 +55,9 @@ jobs:
           echo "output_name=$OUTPUT_NAME" >> $GITHUB_ENV
           echo "::set-output name=output_name::$OUTPUT_NAME"
 
+      - name: List files in directory
+        run: ls -alh
+
       - name: Upload build artifacts
         uses: actions/upload-artifact@v3
         with:
