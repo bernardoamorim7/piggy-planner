@@ -47,6 +47,8 @@ func (s *expensesService) Create(expense *models.Expense) error {
 		return errors.New("Missing expense user ID")
 	}
 
+	date := expense.Date.Format("2006-01-02")
+
 	query := "INSERT INTO expenses (fk_user_id, amount, description, date, fk_expense_type_id) VALUES (?, ?, ?, ?, ?)"
 
 	stmt, err := s.DB.Prepare(query)
@@ -54,7 +56,7 @@ func (s *expensesService) Create(expense *models.Expense) error {
 		return err
 	}
 
-	_, err = stmt.Exec(expense.UserID, expense.Amount, expense.Description, expense.Date, expense.Type.ID)
+	_, err = stmt.Exec(expense.UserID, expense.Amount, expense.Description, date, expense.Type.ID)
 	if err != nil {
 		return err
 	}
@@ -71,7 +73,7 @@ func (s *expensesService) GetAll(fkUserId uint64) ([]models.Expense, error) {
         expenses.description, 
         expense_types.id AS expense_type_id, 
         expense_types.name AS expense_type_name, 
-        expenses.date 
+        DATE(expenses.date) AS date
     FROM 
         expenses 
     INNER JOIN 
@@ -131,7 +133,7 @@ func (s *expensesService) GetByID(id uint64) (*models.Expense, error) {
 						expenses.description, 
 						expense_types.id AS expense_type_id, 
 						expense_types.name AS expense_type_name, 
-						expenses.date 
+						DATE(expenses.date) AS date 
 					FROM 
 						expenses 
 					INNER JOIN 
@@ -181,7 +183,7 @@ func (s *expensesService) GetByDescription(description string) ([]models.Expense
 						expenses.description, 
 						expense_types.id AS expense_type_id, 
 						expense_types.name AS expense_type_name, 
-						expenses.date 
+						DATE(expenses.date) AS date
 					FROM 
 						expenses 
 					INNER JOIN 
@@ -246,7 +248,7 @@ func (s *expensesService) GetByPeriod(fkUserId uint64, startDate time.Time, endD
 		expenses.description,
 		expense_types.id AS expense_type_id,
 		expense_types.name AS expense_type_name,
-		expenses.date
+		DATE(expenses.date) AS date
 	FROM
 		expenses
 	INNER JOIN
@@ -318,6 +320,8 @@ func (s *expensesService) Update(expense *models.Expense) error {
 		return errors.New("Missing expense user ID")
 	}
 
+	date := expense.Date.Format("2006-01-02")
+
 	query := "UPDATE expenses SET amount = ?, description = ?, fk_expense_type_id = ?, date = ? WHERE id = ?"
 
 	stmt, err := s.DB.Prepare(query)
@@ -325,7 +329,7 @@ func (s *expensesService) Update(expense *models.Expense) error {
 		return err
 	}
 
-	_, err = stmt.Exec(expense.Amount, expense.Description, expense.Type.ID, expense.Date, expense.ID)
+	_, err = stmt.Exec(expense.Amount, expense.Description, expense.Type.ID, date, expense.ID)
 	if err != nil {
 		return err
 	}

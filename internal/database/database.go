@@ -95,7 +95,6 @@ func runMigrations(db *sql.DB) {
 		}
 
 		migrationPath := "migrations/" + entry.Name()
-		log.Printf("Running migrations in directory: %s", migrationPath)
 
 		if err := goose.Up(db, migrationPath); err != nil {
 			log.Fatalf("Failed to run migrations in %s: %v", migrationPath, err)

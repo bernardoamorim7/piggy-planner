@@ -47,6 +47,8 @@ func (s *incomesService) Create(income *models.Income) error {
 		return errors.New("Missing income user ID")
 	}
 
+	date := income.Date.Format("2006-01-02")
+
 	query := "INSERT INTO incomes (fk_user_id, amount, description, date, fk_income_type_id) VALUES (?, ?, ?, ?, ?)"
 
 	stmt, err := s.DB.Prepare(query)
@@ -54,7 +56,7 @@ func (s *incomesService) Create(income *models.Income) error {
 		return err
 	}
 
-	_, err = stmt.Exec(income.UserID, income.Amount, income.Description, income.Date, income.Type.ID)
+	_, err = stmt.Exec(income.UserID, income.Amount, income.Description, date, income.Type.ID)
 	if err != nil {
 		return err
 	}
@@ -71,7 +73,7 @@ func (s *incomesService) GetAll(fkUserId uint64) ([]models.Income, error) {
         incomes.description, 
         income_types.id AS income_type_id, 
         income_types.name AS income_type_name, 
-        incomes.date 
+        DATE(incomes.date) AS date
     FROM 
         incomes 
     INNER JOIN 
@@ -131,7 +133,7 @@ func (s *incomesService) GetByID(id uint64) (*models.Income, error) {
 						incomes.description, 
 						income_types.id AS income_type_id, 
 						income_types.name AS income_type_name, 
-						incomes.date 
+						DATE(incomes.date) AS date
 					FROM 
 						incomes 
 					INNER JOIN 
@@ -181,7 +183,7 @@ func (s *incomesService) GetByDescription(description string) ([]models.Income, 
 						incomes.description, 
 						income_types.id AS income_type_id, 
 						income_types.name AS income_type_name, 
-						incomes.date 
+						DATE(incomes.date) AS date
 					FROM 
 						incomes 
 					INNER JOIN 
@@ -246,7 +248,7 @@ func (s *incomesService) GetByPeriod(fkUserId uint64, startDate time.Time, endDa
 		incomes.description,
 		income_types.id AS income_type_id,
 		income_types.name AS income_type_name,
-		incomes.date
+		DATE(incomes.date) AS date
 	FROM
 		incomes
 	INNER JOIN
@@ -318,6 +320,8 @@ func (s *incomesService) Update(income *models.Income) error {
 		return errors.New("Missing income user ID")
 	}
 
+	date := income.Date.Format("2006-01-02")
+
 	query := "UPDATE incomes SET amount = ?, description = ?, fk_income_type_id = ?, date = ? WHERE id = ?"
 
 	stmt, err := s.DB.Prepare(query)
@@ -325,7 +329,7 @@ func (s *incomesService) Update(income *models.Income) error {
 		return err
 	}
 
-	_, err = stmt.Exec(income.Amount, income.Description, income.Type.ID, income.Date, income.ID)
+	_, err = stmt.Exec(income.Amount, income.Description, income.Type.ID, date, income.ID)
 	if err != nil {
 		return err
 	}
