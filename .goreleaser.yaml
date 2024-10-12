@@ -35,9 +35,9 @@ archives:
   - id: archive_noncgo
     builds: [build_noncgo]
     format: zip
-    files:
-      - LICENSE.md
-      - CHANGELOG.md
+    # files:
+    #   - LICENSE.md
+    #   - CHANGELOG.md
 
 checksum:
   name_template: "checksums.txt"
