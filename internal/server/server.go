@@ -20,7 +20,10 @@ type Server struct {
 }
 
 func NewServer() *http.Server {
-	port, _ := strconv.Atoi(os.Getenv("PORT"))
+	port, err := strconv.Atoi(os.Getenv("PORT"))
+	if err != nil {
+		port = 8777
+	}
 
 	db, err := database.New()
 	if err != nil {
