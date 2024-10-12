@@ -36,7 +36,7 @@ node_modules
 *_templ.go
 
 # tailwindcss generated files
-cmd/web/assets/css/tailwind.css
+/web/assets/css/tailwind.css
 
 # database
 piggy_planner.db
