@@ -1,2 +1,49 @@
+project_name: piggy-planner
+
+before:
+  hooks:
+    - go mod tidy
+
 builds:
-  - main: ./cmd/api
+  - id: build_noncgo
+    main: ./
+    binary: piggy-planner
+    ldflags:
+      - -s -w -X github.com/bernardoamorim7/piggy-planner.Version={{ .Version }}
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - linux
+      - windows
+      - darwin
+    goarch:
+      - amd64
+      - arm64
+      - arm
+    goarm:
+      - "7"
+    ignore:
+      - goos: windows
+        goarch: arm
+      - goos: darwin
+        goarch: arm
+
+release:
+  draft: true
+
+archives:
+  - id: archive_noncgo
+    builds: [build_noncgo]
+    format: zip
+    files:
+      - LICENSE.md
+      - CHANGELOG.md
+
+checksum:
+  name_template: "checksums.txt"
+
+snapshot:
+  name_template: "{{ incpatch .Version }}-next"
+
+changelog:
+  sort: asc

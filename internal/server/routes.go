@@ -4,7 +4,7 @@ import (
 	"net/http"
 	"os"
 
-	"piggy-planner/cmd/web"
+	"piggy-planner/web"
 
 	"piggy-planner/internal/handlers"
 	"piggy-planner/internal/middlewares"

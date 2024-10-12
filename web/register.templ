@@ -1,8 +1,6 @@
 package web
 
-import (
-	"piggy-planner/cmd/web/icons"
-)
+import "piggy-planner/web/icons"
 
 templ Register() {
 	<!DOCTYPE html>
@@ -40,7 +38,7 @@ templ Register() {
 							</figure>
 							<input class="input input-bordered shadow-lg" type="text" name="name" id="name" placeholder="Name" required/>
 						</div>
-                        <div class="my-2"></div>
+						<div class="my-2"></div>
 						<div class="flex flex-row items-center justify-center">
 							<figure class="w-8 h-8 mr-2" aria-label="Password">
 								@icons.Password()

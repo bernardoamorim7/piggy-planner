@@ -2,8 +2,8 @@ package handlers
 
 import (
 	"net/http"
-	"piggy-planner/cmd/web"
-	"piggy-planner/cmd/web/views"
+	"piggy-planner/web"
+	"piggy-planner/web/views"
 
 	"github.com/labstack/echo/v4"
 )

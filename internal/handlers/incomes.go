@@ -5,10 +5,10 @@ import (
 	"strconv"
 	"time"
 
-	incomesComponents "piggy-planner/cmd/web/components/incomes"
 	"piggy-planner/internal/database"
 	"piggy-planner/internal/models"
 	"piggy-planner/internal/services"
+	incomesComponents "piggy-planner/web/components/incomes"
 
 	"github.com/labstack/echo/v4"
 )

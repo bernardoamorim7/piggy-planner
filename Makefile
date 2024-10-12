@@ -8,20 +8,20 @@ all: build
 build:
 	@echo "Building..."
 	@templ generate
-	@npx tailwindcss -i ./cmd/web/assets/css/input.css -o ./cmd/web/assets/css/tailwind.css --minify
-	@go build -o main cmd/api/main.go 
+	@npx tailwindcss -i ./web/assets/css/input.css -o ./web/assets/css/tailwind.css --minify
+	@go build -o main main.go 
 
 build-release:
 	@echo "Building..."
 	@templ generate
-	@npx tailwindcss -i ./cmd/web/assets/css/input.css -o ./cmd/web/assets/css/tailwind.css --minify
-	@go build -ldflags="-s -w" -o main cmd/api/main.go 
+	@npx tailwindcss -i ./web/assets/css/input.css -o ./web/assets/css/tailwind.css --minify
+	@go build -ldflags="-s -w" -o main main.go 
 
 build-release-raspberry:
 	@echo "Building..."
 	@templ generate
-	@npx tailwindcss -i ./cmd/web/assets/css/input.css -o ./cmd/web/assets/css/tailwind.css --minify
-	@GOOS=linux GOARCH=arm64 go build -ldflags="-s -w" -o main_raspberry cmd/api/main.go 
+	@npx tailwindcss -i ./web/assets/css/input.css -o ./web/assets/css/tailwind.css --minify
+	@GOOS=linux GOARCH=arm64 go build -ldflags="-s -w" -o main_raspberry main.go 
 
 # Run the application
 run:
@@ -71,11 +71,5 @@ watch:
 	        exit 1; \
 	    fi; \
 	fi
-
-goose-up:
-	@goose -dir ./database mysql "$(DB_USERNAME):$(DB_PASSWORD)@/$(DB_DATABASE)" up
-
-goose-down:
-	@goose -dir ./database mysql "$(DB_USERNAME):$(DB_PASSWORD)@/$(DB_DATABASE)" down
 
 .PHONY: all build run test clean

@@ -1,22 +1,22 @@
-package expenses
+package incomes
 
 import (
 	"fmt"
-	"piggy-planner/cmd/web/icons"
+	"piggy-planner/web/icons"
 )
 
-// Delete Expense Modal
-templ DeleteExpenseModal(expenseID uint64) {
+// Delete Income Modal
+templ DeleteIncomeModal(incomeID uint64) {
 	<dialog
-		id="deleteExpenseModal"
+		id="deleteIncomeModal"
 		class="modal modal-bottom sm:modal-middle"
 		@close="window.location.reload()"
 	>
 		<div class="modal-box">
 			<h3
-				id="deleteExpenseModalTitle"
+				id="deleteIncomeModalTitle"
 				class="font-bold text-xl text-center mb-2"
-			>Delete Expense?</h3>
+			>Delete Income?</h3>
 			<div class="modal-action items-center content-center justify-center">
 				<form method="dialog">
 					<button
@@ -27,10 +27,10 @@ templ DeleteExpenseModal(expenseID uint64) {
 					</button>
 				</form>
 				<form
-					id="deleteExpenseForm"
-					hx-delete="/api/expenses"
+					id="deleteIncomeForm"
+					hx-delete="/api/incomes"
 				>
-					<input type="hidden" name="id" value={ fmt.Sprintf("%v", expenseID) }/>
+					<input type="hidden" name="id" value={ fmt.Sprintf("%v", incomeID) }/>
 					<button
 						type="submit"
 						class="btn btn-success rounded-lg"
