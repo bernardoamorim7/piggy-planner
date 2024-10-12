@@ -1,0 +1,4 @@
+builds:
+  - main: ./cmd/api
+    env:
+      - CGO_ENABLED=1
