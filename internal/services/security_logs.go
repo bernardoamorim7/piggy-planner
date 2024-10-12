@@ -12,10 +12,10 @@ type SecurityLogsService interface {
 }
 
 type securityLogsService struct {
-	DB database.Service
+	DB database.DbService
 }
 
-func NewSecurityLogsService(db database.Service) SecurityLogsService {
+func NewSecurityLogsService(db database.DbService) SecurityLogsService {
 	return &securityLogsService{
 		DB: db,
 	}

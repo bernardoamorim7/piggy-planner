@@ -3,18 +3,21 @@ package database
 import (
 	"context"
 	"database/sql"
+	"embed"
 	"fmt"
 	"log"
-	"os"
 	"strconv"
 	"time"
 
-	_ "github.com/go-sql-driver/mysql"
-	_ "github.com/joho/godotenv/autoload"
+	_ "github.com/mattn/go-sqlite3"
+	"github.com/pressly/goose/v3"
 )
 
-// Service represents a service that interacts with a database.
-type Service interface {
+//go:embed migrations/**/*.sql
+var migrations embed.FS
+
+// DbService represents a service that interacts with a database.
+type DbService interface {
 	// Health returns a map of health status information.
 	// The keys and values in the map are service-specific.
 	Health() map[string]string
@@ -39,45 +42,70 @@ type Service interface {
 	Begin() (*sql.Tx, error)
 }
 
-type service struct {
+type dbService struct {
 	db *sql.DB
 }
 
 var (
-	dbname     = os.Getenv("DB_DATABASE")
-	password   = os.Getenv("DB_PASSWORD")
-	username   = os.Getenv("DB_USERNAME")
-	port       = os.Getenv("DB_PORT")
-	host       = os.Getenv("DB_HOST")
-	dbInstance *service
+	dbInstance *dbService
 )
 
-func New() Service {
+func New() (DbService, error) {
 	// Reuse Connection
 	if dbInstance != nil {
-		return dbInstance
+		return dbInstance, nil
 	}
 
-	// Opening a driver typically will not attempt to connect to the database.
-	db, err := sql.Open("mysql", fmt.Sprintf("%s:%s@tcp(%s:%s)/%s", username, password, host, port, dbname))
+	db, err := sql.Open("sqlite3", "./piggy_planner.db")
 	if err != nil {
-		// This will not be a connection error, but a DSN parse error or
-		// another initialization error.
-		log.Fatal(err)
+		return nil, err
 	}
-	db.SetConnMaxLifetime(0)
-	db.SetMaxIdleConns(50)
-	db.SetMaxOpenConns(50)
 
-	dbInstance = &service{
-		db: db,
+	// Run migrations
+	runMigrations(db)
+
+	dbInstance = &dbService{db: db}
+	return dbInstance, nil
+}
+
+// runMigrations runs the database migrations using the goose package.
+func runMigrations(db *sql.DB) {
+	goose.SetBaseFS(migrations)
+	err := goose.SetDialect("sqlite3")
+	if err != nil {
+		log.Fatalf("Failed to set dialect: %v", err)
 	}
-	return dbInstance
+
+	// Debugging: List embedded files
+	entries, err := migrations.ReadDir("migrations")
+	if err != nil {
+		log.Fatalf("Failed to read embedded migrations: %v", err)
+	}
+
+	for _, entry := range entries {
+		log.Printf("Found migration directory: %s", entry.Name())
+
+		subEntries, err := migrations.ReadDir("migrations/" + entry.Name())
+		if err != nil {
+			log.Fatalf("Failed to read embedded migrations in %s: %v", entry.Name(), err)
+		}
+
+		for _, subEntry := range subEntries {
+			log.Printf("Found migration file: %s/%s", entry.Name(), subEntry.Name())
+		}
+
+		migrationPath := "migrations/" + entry.Name()
+		log.Printf("Running migrations in directory: %s", migrationPath)
+
+		if err := goose.Up(db, migrationPath); err != nil {
+			log.Fatalf("Failed to run migrations in %s: %v", migrationPath, err)
+		}
+	}
 }
 
 // Health checks the health of the database connection by pinging the database.
 // It returns a map with keys indicating various health statistics.
-func (s *service) Health() map[string]string {
+func (s *dbService) Health() map[string]string {
 	ctx, cancel := context.WithTimeout(context.Background(), 1*time.Second)
 	defer cancel()
 
@@ -88,7 +116,7 @@ func (s *service) Health() map[string]string {
 	if err != nil {
 		stats["status"] = "down"
 		stats["error"] = fmt.Sprintf("db down: %v", err)
-		log.Fatalf(fmt.Sprintf("db down: %v", err)) // Log the error and terminate the program
+		log.Fatalf("db down: %v", err) // Log the error and terminate the program
 		return stats
 	}
 
@@ -129,37 +157,37 @@ func (s *service) Health() map[string]string {
 // It logs a message indicating the disconnection from the specific database.
 // If the connection is successfully closed, it returns nil.
 // If an error occurs while closing the connection, it returns the error.
-func (s *service) Close() error {
-	log.Printf("Disconnected from database: %s", dbname)
+func (s *dbService) Close() error {
+	log.Printf("Disconnected from database")
 	return s.db.Close()
 }
 
 // QueryRow executes a query that is expected to return at most one row.
 // QueryRow always returns a non-nil value. Errors are deferred until Row's Scan method is called.
-func (s *service) QueryRow(query string, args ...any) *sql.Row {
+func (s *dbService) QueryRow(query string, args ...any) *sql.Row {
 	return s.db.QueryRow(query, args...)
 }
 
 // Query executes a query that returns rows, typically a SELECT.
 // The args are for any placeholder parameters in the query.
-func (s *service) Query(query string, args ...any) (*sql.Rows, error) {
+func (s *dbService) Query(query string, args ...any) (*sql.Rows, error) {
 	return s.db.Query(query, args...)
 }
 
 // Exec executes a query without returning any rows.
 // The args are for any placeholder parameters in the query.
-func (s *service) Exec(query string, args ...any) (sql.Result, error) {
+func (s *dbService) Exec(query string, args ...any) (sql.Result, error) {
 	return s.db.Exec(query, args...)
 }
 
 // Prepare creates a prepared statement for later queries or executions.
 // Multiple queries or executions may be run concurrently from the returned statement.
-func (s *service) Prepare(query string) (*sql.Stmt, error) {
+func (s *dbService) Prepare(query string) (*sql.Stmt, error) {
 	return s.db.Prepare(query)
 }
 
 // Begin starts a new transaction.
 // The default isolation level is dependent on the driver.
-func (s *service) Begin() (*sql.Tx, error) {
+func (s *dbService) Begin() (*sql.Tx, error) {
 	return s.db.Begin()
 }

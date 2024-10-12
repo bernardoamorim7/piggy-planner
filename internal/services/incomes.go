@@ -25,10 +25,10 @@ type IncomesService interface {
 }
 
 type incomesService struct {
-	DB database.Service
+	DB database.DbService
 }
 
-func NewIncomesService(db database.Service) IncomesService {
+func NewIncomesService(db database.DbService) IncomesService {
 	return &incomesService{
 		DB: db,
 	}
@@ -364,10 +364,10 @@ type IncomeTypesService interface {
 }
 
 type incomeTypeService struct {
-	DB database.Service
+	DB database.DbService
 }
 
-func NewIncomeTypesService(db database.Service) IncomeTypesService {
+func NewIncomeTypesService(db database.DbService) IncomeTypesService {
 	return &incomeTypeService{
 		DB: db,
 	}

@@ -39,7 +39,10 @@ func CreateIncome(c echo.Context) error {
 		return err
 	}
 
-	db := database.New()
+	db, err := database.New()
+	if err != nil {
+		return err
+	}
 
 	incomesService := services.NewIncomesService(db)
 
@@ -63,7 +66,10 @@ func CreateIncome(c echo.Context) error {
 func GetAllIncomes(c echo.Context) error {
 	userId := c.Get("userID").(uint64)
 
-	db := database.New()
+	db, err := database.New()
+	if err != nil {
+		return err
+	}
 
 	incomesService := services.NewIncomesService(db)
 
@@ -91,7 +97,10 @@ func GetIncome(c echo.Context) error {
 		return err
 	}
 
-	db := database.New()
+	db, err := database.New()
+	if err != nil {
+		return err
+	}
 
 	incomesService := services.NewIncomesService(db)
 
@@ -108,7 +117,10 @@ func GetIncome(c echo.Context) error {
 func GetIncomesByDescription(c echo.Context) error {
 	description := c.FormValue("search")
 
-	db := database.New()
+	db, er := database.New()
+	if er != nil {
+		return er
+	}
 
 	incomesService := services.NewIncomesService(db)
 
@@ -185,7 +197,10 @@ func UpdateIncome(c echo.Context) error {
 		date = time.Time{}
 	}
 
-	db := database.New()
+	db, err := database.New()
+	if err != nil {
+		return err
+	}
 
 	incomesService := services.NewIncomesService(db)
 
@@ -214,7 +229,10 @@ func DeleteIncome(c echo.Context) error {
 		return err
 	}
 
-	db := database.New()
+	db, err := database.New()
+	if err != nil {
+		return err
+	}
 
 	incomesService := services.NewIncomesService(db)
 
@@ -232,7 +250,10 @@ func CreateIncomeType(c echo.Context) error {
 
 	name := c.FormValue("name")
 
-	db := database.New()
+	db, err := database.New()
+	if err != nil {
+		return err
+	}
 
 	incomeTypeService := services.NewIncomeTypesService(db)
 
@@ -240,7 +261,7 @@ func CreateIncomeType(c echo.Context) error {
 		Name: name,
 	}
 
-	err := incomeTypeService.Create(userId, incomeType)
+	err = incomeTypeService.Create(userId, incomeType)
 	if err != nil {
 		return err
 	}
@@ -252,7 +273,10 @@ func CreateIncomeType(c echo.Context) error {
 func GetAllIncomeTypes(c echo.Context) error {
 	userId := c.Get("userID").(uint64)
 
-	db := database.New()
+	db, err := database.New()
+	if err != nil {
+		return err
+	}
 
 	incomeTypeService := services.NewIncomeTypesService(db)
 
@@ -271,7 +295,10 @@ func GetIncomeType(c echo.Context) error {
 		return err
 	}
 
-	db := database.New()
+	db, err := database.New()
+	if err != nil {
+		return err
+	}
 
 	incomeTypeService := services.NewIncomeTypesService(db)
 
@@ -293,7 +320,10 @@ func UpdateIncomeType(c echo.Context) error {
 
 	name := c.FormValue("name")
 
-	db := database.New()
+	db, err := database.New()
+	if err != nil {
+		return err
+	}
 
 	incomeTypeService := services.NewIncomeTypesService(db)
 
@@ -325,7 +355,10 @@ func DeleteIncomeType(c echo.Context) error {
 		return err
 	}
 
-	db := database.New()
+	db, err := database.New()
+	if err != nil {
+		return err
+	}
 
 	incomeTypeService := services.NewIncomeTypesService(db)
 
@@ -349,7 +382,10 @@ func UpdateIncomeModalHandler(c echo.Context) error {
 		return err
 	}
 
-	db := database.New()
+	db, err := database.New()
+	if err != nil {
+		return err
+	}
 
 	incomesService := services.NewIncomesService(db)
 

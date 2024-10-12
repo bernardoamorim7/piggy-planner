@@ -27,7 +27,10 @@ func Login(c echo.Context) error {
 		return c.String(http.StatusBadRequest, "Password must be at least 8 characters long")
 	}
 
-	db := database.New()
+	db, err := database.New()
+	if err != nil {
+		return err
+	}
 
 	userService := services.NewUserService(db)
 
@@ -83,11 +86,14 @@ func Register(c echo.Context) error {
 		return c.String(http.StatusBadRequest, "Password must be at least 8 characters long")
 	}
 
-	db := database.New()
+	db, err := database.New()
+	if err != nil {
+		return err
+	}
 
 	userService := services.NewUserService(db)
 
-	_, err := userService.GetByEmail(email)
+	_, err = userService.GetByEmail(email)
 	if err == nil {
 		return c.String(http.StatusConflict, "Account already exists")
 	}
@@ -128,7 +134,10 @@ func Logout(c echo.Context) error {
 
 	userID := sess.Values["userID"].(uint64)
 
-	db := database.New()
+	db, err := database.New()
+	if err != nil {
+		return err
+	}
 
 	// Create security log
 	logService := services.NewSecurityLogsService(db)
@@ -145,7 +154,7 @@ func Logout(c echo.Context) error {
 		MaxAge:   -1,
 		HttpOnly: true,
 	}
-	err := sess.Save(c.Request(), c.Response())
+	err = sess.Save(c.Request(), c.Response())
 	if err != nil {
 		return errors.New("Failed to delete session")
 	}

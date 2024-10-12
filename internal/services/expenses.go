@@ -25,10 +25,10 @@ type ExpensesService interface {
 }
 
 type expensesService struct {
-	DB database.Service
+	DB database.DbService
 }
 
-func NewExpensesService(db database.Service) ExpensesService {
+func NewExpensesService(db database.DbService) ExpensesService {
 	return &expensesService{
 		DB: db,
 	}
@@ -364,10 +364,10 @@ type ExpenseTypesService interface {
 }
 
 type expenseTypesService struct {
-	DB database.Service
+	DB database.DbService
 }
 
-func NewExpenseTypesService(db database.Service) ExpenseTypesService {
+func NewExpenseTypesService(db database.DbService) ExpenseTypesService {
 	return &expenseTypesService{
 		DB: db,
 	}

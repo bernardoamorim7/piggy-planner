@@ -26,14 +26,14 @@ type UserService interface {
 }
 
 // NewUserService creates a new user service.
-func NewUserService(db database.Service) UserService {
+func NewUserService(db database.DbService) UserService {
 	return &userService{
 		DB: db,
 	}
 }
 
 type userService struct {
-	DB database.Service
+	DB database.DbService
 }
 
 func (s *userService) GetByEmail(email string) (*models.User, error) {

@@ -39,7 +39,10 @@ func CreateExpense(c echo.Context) error {
 		return err
 	}
 
-	db := database.New()
+	db, err := database.New()
+	if err != nil {
+		return err
+	}
 
 	expensesService := services.NewExpensesService(db)
 
@@ -63,7 +66,10 @@ func CreateExpense(c echo.Context) error {
 func GetAllExpenses(c echo.Context) error {
 	userId := c.Get("userID").(uint64)
 
-	db := database.New()
+	db, err := database.New()
+	if err != nil {
+		return err
+	}
 
 	expensesService := services.NewExpensesService(db)
 
@@ -91,7 +97,10 @@ func GetExpense(c echo.Context) error {
 		return err
 	}
 
-	db := database.New()
+	db, err := database.New()
+	if err != nil {
+		return err
+	}
 
 	expensesService := services.NewExpensesService(db)
 
@@ -108,7 +117,10 @@ func GetExpense(c echo.Context) error {
 func GetExpensesByDescription(c echo.Context) error {
 	description := c.FormValue("search")
 
-	db := database.New()
+	db, er := database.New()
+	if er != nil {
+		return er
+	}
 
 	expensesService := services.NewExpensesService(db)
 
@@ -190,7 +202,10 @@ func UpdateExpense(c echo.Context) error {
 		date = time.Time{}
 	}
 
-	db := database.New()
+	db, err := database.New()
+	if err != nil {
+		return err
+	}
 
 	expensesService := services.NewExpensesService(db)
 
@@ -219,7 +234,10 @@ func DeleteExpense(c echo.Context) error {
 		return err
 	}
 
-	db := database.New()
+	db, err := database.New()
+	if err != nil {
+		return err
+	}
 
 	expensesService := services.NewExpensesService(db)
 
@@ -237,7 +255,10 @@ func CreateExpenseType(c echo.Context) error {
 
 	name := c.FormValue("name")
 
-	db := database.New()
+	db, err := database.New()
+	if err != nil {
+		return err
+	}
 
 	expensesTypesService := services.NewExpenseTypesService(db)
 
@@ -245,7 +266,7 @@ func CreateExpenseType(c echo.Context) error {
 		Name: name,
 	}
 
-	err := expensesTypesService.Create(userId, expenseType)
+	err = expensesTypesService.Create(userId, expenseType)
 	if err != nil {
 		return err
 	}
@@ -257,7 +278,10 @@ func CreateExpenseType(c echo.Context) error {
 func GetAllExpenseTypes(c echo.Context) error {
 	userId := c.Get("userID").(uint64)
 
-	db := database.New()
+	db, err := database.New()
+	if err != nil {
+		return err
+	}
 
 	expensesTypesService := services.NewExpenseTypesService(db)
 
@@ -276,7 +300,10 @@ func GetExpenseType(c echo.Context) error {
 		return err
 	}
 
-	db := database.New()
+	db, err := database.New()
+	if err != nil {
+		return err
+	}
 
 	expensesTypesService := services.NewExpenseTypesService(db)
 
@@ -298,7 +325,10 @@ func UpdateExpenseType(c echo.Context) error {
 
 	name := c.FormValue("name")
 
-	db := database.New()
+	db, err := database.New()
+	if err != nil {
+		return err
+	}
 
 	expenseTypesService := services.NewExpenseTypesService(db)
 
@@ -330,7 +360,10 @@ func DeleteExpenseType(c echo.Context) error {
 		return err
 	}
 
-	db := database.New()
+	db, err := database.New()
+	if err != nil {
+		return err
+	}
 
 	expensesTypesService := services.NewExpenseTypesService(db)
 
@@ -354,7 +387,10 @@ func UpdateExpenseModalHandler(c echo.Context) error {
 		return err
 	}
 
-	db := database.New()
+	db, err := database.New()
+	if err != nil {
+		return err
+	}
 
 	expensesService := services.NewExpensesService(db)
 

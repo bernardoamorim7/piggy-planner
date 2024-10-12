@@ -16,7 +16,10 @@ func BalanceHandler(c echo.Context) error {
 
 	var balance float64
 
-	db := database.New()
+	db, err := database.New()
+	if err != nil {
+		return err
+	}
 
 	incomesService := services.NewIncomesService(db)
 
@@ -48,7 +51,10 @@ func BalanceHandler(c echo.Context) error {
 
 // 	var debt float64
 
-// 	db := database.New()
+// 		db, err := database.New()
+// if err != nil {
+// 	return err
+// }
 
 // 	debtsService := services.NewDebtsService(db)
 
@@ -67,7 +73,10 @@ func BalanceHandler(c echo.Context) error {
 func TotalExpensesHandler(c echo.Context) error {
 	userID := c.Get("userID").(uint64)
 
-	db := database.New()
+	db, err := database.New()
+	if err != nil {
+		return err
+	}
 
 	expensesService := services.NewExpensesService(db)
 
@@ -95,7 +104,10 @@ func CurrentMonthIncomesHandler(c echo.Context) error {
 	// Calculate the last day of the current month
 	endDate := time.Date(now.Year(), now.Month()+1, 1, 0, 0, 0, 0, now.Location()).AddDate(0, 0, -1)
 
-	db := database.New()
+	db, err := database.New()
+	if err != nil {
+		return err
+	}
 
 	incomesService := services.NewIncomesService(db)
 
@@ -123,7 +135,10 @@ func CurrentMonthExpensesHandler(c echo.Context) error {
 	// Calculate the last day of the current month
 	endDate := time.Date(now.Year(), now.Month()+1, 1, 0, 0, 0, 0, now.Location()).AddDate(0, 0, -1)
 
-	db := database.New()
+	db, err := database.New()
+	if err != nil {
+		return err
+	}
 
 	expensesService := services.NewExpensesService(db)
 
@@ -143,7 +158,10 @@ func CurrentMonthExpensesHandler(c echo.Context) error {
 func IncomesChartHandler(c echo.Context) error {
 	userID := c.Get("userID").(uint64)
 
-	db := database.New()
+	db, err := database.New()
+	if err != nil {
+		return err
+	}
 
 	incomesService := services.NewIncomesService(db)
 
@@ -227,7 +245,10 @@ func IncomesChartHandler(c echo.Context) error {
 func ExpensesChartHandler(c echo.Context) error {
 	userID := c.Get("userID").(uint64)
 
-	db := database.New()
+	db, err := database.New()
+	if err != nil {
+		return err
+	}
 
 	expensesService := services.NewExpensesService(db)
 
