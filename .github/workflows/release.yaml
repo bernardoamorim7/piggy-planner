@@ -1,89 +1,45 @@
-name: Release
+name: basebuild
 
 on:
+  pull_request:
   push:
-    tags:
-      - 'v*.*.*'
 
 jobs:
-  build:
-    permissions:
-      contents: write
-
+  goreleaser:
     runs-on: ubuntu-latest
-
-    strategy:
-      matrix:
-        goos: [linux, darwin, windows]
-        goarch: [amd64, arm64]
-
-    outputs:
-      artifacts: ${{ steps.collect_artifacts.outputs.artifacts }}
-
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Set up Go
-        uses: actions/setup-go@v2
+        uses: actions/setup-go@v5
         with:
-          go-version: '1.22'
+          go-version: '>=1.22.7'
 
-      - name: Install Node.js
-        uses: actions/setup-node@v2
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: 20.17.0
 
       - name: Install NPM dependencies
         run: npm install
-
+  
       - name: Generate Tailwind CSS
         run: npx tailwindcss -i ./cmd/web/assets/css/input.css -o ./cmd/web/assets/css/tailwind.css --minify
-
+  
       - name: Install templ
         run: go install github.com/a-h/templ/cmd/templ@latest
-
+  
       - name: Generate templates
         run: templ generate
 
-      - name: Build for ${{ matrix.goos }}-${{ matrix.goarch }}
-        id: build
-        run: |
-          VERSION=$(echo ${{ github.ref }} | sed 's/refs\/tags\///')
-          OUTPUT_NAME=piggy-planner_${{ matrix.goos }}_${{ matrix.goarch }}_${VERSION}
-          GOOS=${{ matrix.goos }} GOARCH=${{ matrix.goarch }} go build -ldflags="-s -w" -o $OUTPUT_NAME cmd/api/main.go
-          echo "output_name=$OUTPUT_NAME" >> $GITHUB_ENV
-          echo "::set-output name=output_name::$OUTPUT_NAME"
-
-      - name: Upload build artifacts
-        uses: actions/upload-artifact@v4
+      - name: Run GoReleaser
+        uses: goreleaser/goreleaser-action@v3
         with:
-          name: ${{ steps.build.outputs.output_name }}
-          path: ${{ steps.build.outputs.output_name }}
-
-      - name: Collect artifacts
-        id: collect_artifacts
-        run: echo "::set-output name=artifacts::$(ls piggy-planner_* | tr '\n' ',')"
-
-  release:
-    needs: build
-    permissions:
-      contents: write
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-
-      - name: Download build artifacts
-        uses: actions/download-artifact@v4
-        with:
-          name: ${{ needs.build.outputs.artifacts }}
-          path: ./artifacts
-
-      - name: Create Release
-        id: create_release
-        uses: softprops/action-gh-release@v1
+          distribution: goreleaser
+          version: latest
+          args: release --clean
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          files: ./artifacts/*
