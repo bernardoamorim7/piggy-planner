@@ -1,0 +1,17 @@
+package requests
+
+import (
+	"fmt"
+	"piggy-planner/internal/middlewares"
+)
+
+templ RequestLogRows(requests []middlewares.RequestLog) {
+	for _, r := range requests {
+		<tr>
+			<td>{ r.Method }</td>
+			<td>{ r.URL }</td>
+			<td>{ r.RemoteAddr } </td>
+			<td>{ fmt.Sprintf("%v", r.Timestamp) } </td>
+		</tr>
+	}
+}

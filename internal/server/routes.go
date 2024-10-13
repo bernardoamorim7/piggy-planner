@@ -24,6 +24,7 @@ func (s *Server) RegisterRoutes() http.Handler {
 	e.Use(session.Middleware(sessions.NewCookieStore([]byte(os.Getenv("SECRET")))))
 	fileServer := http.FileServer(http.FS(web.Files))
 	e.Use(middlewares.GetSessionVars())
+	e.Use(middlewares.RequestLogger())
 
 	// Static assets
 	e.GET("/assets/*", echo.WrapHandler(fileServer))
@@ -134,6 +135,11 @@ func (s *Server) RegisterRoutes() http.Handler {
 	// Security
 	api.GET("/security", handlers.GetAllSecurityLogs, middlewares.Protected(), middlewares.AdminOnly())
 	api.POST("/security/search", handlers.GetSecurityLogsByUserName, middlewares.Protected(), middlewares.AdminOnly())
+
+	// Database
+
+	// Requests
+	api.GET("/requests", handlers.RequestLogsHandler, middlewares.Protected(), middlewares.AdminOnly())
 
 	return e
 }

@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"net/http"
+	"piggy-planner/internal/middlewares"
 	"piggy-planner/web"
 	"piggy-planner/web/views"
 
@@ -82,7 +83,7 @@ func DatabaseHandler(c echo.Context) error {
 
 func RequestsHandler(c echo.Context) error {
 	if c.Request().Header.Get("HX-Request") != "" {
-		return render(c, http.StatusOK, views.Requests())
+		return render(c, http.StatusOK, views.Requests(middlewares.GetRequestLogs()))
 	} else {
 		return render(c, http.StatusOK, web.Base())
 	}
