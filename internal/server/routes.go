@@ -25,6 +25,7 @@ func (s *Server) RegisterRoutes() http.Handler {
 	fileServer := http.FileServer(http.FS(web.Files))
 	e.Use(middlewares.GetSessionVars())
 	e.Use(middlewares.RequestLogger())
+	e.Use(middleware.Gzip())
 
 	// Static assets
 	e.GET("/assets/*", echo.WrapHandler(fileServer))
@@ -140,6 +141,7 @@ func (s *Server) RegisterRoutes() http.Handler {
 
 	// Requests
 	api.GET("/requests", handlers.RequestLogsHandler, middlewares.Protected(), middlewares.AdminOnly())
+	// api.GET("/requests/history", handlers.RequestHistoryHandler, middlewares.Protected(), middlewares.AdminOnly())
 
 	return e
 }

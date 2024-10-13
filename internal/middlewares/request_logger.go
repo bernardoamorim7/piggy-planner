@@ -30,11 +30,8 @@ func RequestLogger() echo.MiddlewareFunc {
 			}
 
 			mu.Lock()
-			if log.URL != "/api/requests" {
+			if log.URL != "/api/requests" && log.URL != "/api/requests/history" {
 				requestLogs = append([]RequestLog{log}, requestLogs...) // Insert at the beginning
-				if len(requestLogs) > 10 {
-					requestLogs = requestLogs[:10] // Trim to the last 10 entries
-				}
 			}
 			mu.Unlock()
 

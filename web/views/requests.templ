@@ -8,6 +8,9 @@ import (
 templ Requests(requests []middlewares.RequestLog) {
 	<div class="container mx-auto p-4">
 		<h1 class="text-2xl font-bold mb-4">Recent Requests</h1>
+		// <div class="my-2"></div>
+		// <canvas id="requestsChart" class="w-full border-solid border-primary"></canvas>
+		// <div class="my-4"></div>
 		<table class="table w-full" id="requests-table" hx-get="/api/requests" hx-trigger="load, every 10s" hx-target="#requests-table tbody" hx-swap="afterbegin">
 			<thead>
 				<tr>
@@ -23,12 +26,14 @@ templ Requests(requests []middlewares.RequestLog) {
 		</table>
 	</div>
 	<script>
-	document.addEventListener('htmx:afterRequest', function(){
-		const tbody = document.querySelector('#requests-table tbody');
-
-		while (tbody.rows.length > 10) {
-			tbody.deleteRow(tbody.rows.length - 1);
-		}
-	});
+		// Remove old rows from the table (keep only the most recent 10 requests)
+		document.addEventListener('htmx:afterRequest', function(){
+			const tbody = document.querySelector('#requests-table tbody');
+			if (tbody) {
+				while (tbody.rows.length > 10) {
+					tbody.deleteRow(tbody.rows.length - 1);
+				}
+			}
+		});
 	</script>
 }
