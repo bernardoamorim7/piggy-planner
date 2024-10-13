@@ -15,15 +15,17 @@ type User struct {
 	Email    string `db:"email"`    // Email address of the user
 	Password string `db:"password"` // Hashed password of the user
 	Avatar   string `db:"avatar"`   // URL of Dicebear's API generated avatar
+	IsAdmin  bool   `db:"is_admin"` // Whether the user is an admin or not (default: false)
 }
 
 // NewUser creates a new user.
-func NewUser(name, email, password, avatar string) *User {
+func NewUser(name, email, password, avatar string, isAdmin bool) *User {
 	return &User{
 		Name:     name,
 		Email:    email,
 		Password: password,
 		Avatar:   avatar,
+		IsAdmin:  isAdmin,
 	}
 }
 

@@ -7,6 +7,7 @@ CREATE TABLE IF NOT EXISTS users
     email      TEXT                        NOT NULL UNIQUE,
     password   TEXT                        NOT NULL,
     avatar     TEXT                        NOT NULL,
+    is_admin   BOOLEAN                     NOT NULL DEFAULT FALSE,
     created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP WITHOUT TIME ZONE          DEFAULT NULL
 );

@@ -16,13 +16,13 @@ type UserService interface {
 	Update(user *models.User) error
 
 	// Delete deletes a user.
-	Delete(id int64) error
+	Delete(id uint64) error
 
 	// GetByEmail returns a user by email.
 	GetByEmail(email string) (*models.User, error)
 
 	// GetByID returns a user by ID.
-	GetByID(id int64) (*models.User, error)
+	GetByID(id uint64) (*models.User, error)
 }
 
 // NewUserService creates a new user service.
@@ -56,7 +56,7 @@ func (s *userService) GetByEmail(email string) (*models.User, error) {
 	return user, nil
 }
 
-func (s *userService) GetByID(id int64) (*models.User, error) {
+func (s *userService) GetByID(id uint64) (*models.User, error) {
 	query := "SELECT id, name, email, password, avatar FROM users WHERE id = ?"
 
 	stmt, err := s.DB.Prepare(query)
@@ -93,6 +93,20 @@ func (s *userService) Create(user *models.User) error {
 		return err
 	}
 
+	// Check if there are any existing users
+	var count uint64
+	err := s.DB.QueryRow("SELECT COUNT(*) FROM users").Scan(&count)
+	if err != nil {
+		return err
+	}
+
+	// If no users exist, set is_admin to true
+	if count == 0 {
+		user.IsAdmin = true
+	} else {
+		user.IsAdmin = false
+	}
+
 	query := "INSERT INTO users (name, email, password, avatar) VALUES (?, ?, ?, ?)"
 
 	stmt, err := s.DB.Prepare(query)
@@ -100,7 +114,7 @@ func (s *userService) Create(user *models.User) error {
 		return err
 	}
 
-	_, err = stmt.Exec(user.Name, user.Email, user.Password, user.Avatar)
+	_, err = stmt.Exec(user.Name, user.Email, user.Password, user.Avatar, user.IsAdmin)
 	if err != nil {
 		return err
 	}
@@ -152,7 +166,7 @@ func (s *userService) Update(user *models.User) error {
 	return nil
 }
 
-func (s *userService) Delete(id int64) error {
+func (s *userService) Delete(id uint64) error {
 	query := "DELETE FROM users WHERE id = ?"
 
 	stmt, err := s.DB.Prepare(query)
