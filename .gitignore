@@ -26,8 +26,8 @@ tmp/
 .env
 
 # Project build
-main
-main_raspberry
+piggy-planner
+piggy-planner-raspberry
 
 # node_modules
 node_modules
