@@ -40,3 +40,15 @@ func RedirectIfLoggedIn() echo.MiddlewareFunc {
 		}
 	}
 }
+
+func AdminOnly() echo.MiddlewareFunc {
+	return func(next echo.HandlerFunc) echo.HandlerFunc {
+		return func(c echo.Context) error {
+			sess, _ := session.Get("piggysession", c)
+			if admin, ok := sess.Values["is_admin"].(bool); !ok || !admin {
+				return c.Redirect(http.StatusSeeOther, "/")
+			}
+			return next(c)
+		}
+	}
+}

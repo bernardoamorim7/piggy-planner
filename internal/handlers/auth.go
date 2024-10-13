@@ -44,11 +44,14 @@ func Login(c echo.Context) error {
 	}
 
 	sess, _ := session.Get("piggysession", c)
+
 	sess.Values["authenticated"] = true
 	sess.Values["userID"] = user.ID
 	sess.Values["name"] = user.Name
 	sess.Values["email"] = user.Email
 	sess.Values["avatar"] = user.Avatar
+	sess.Values["is_admin"] = user.IsAdmin
+
 	err = sess.Save(c.Request(), c.Response())
 	if err != nil {
 		return err
@@ -57,7 +60,7 @@ func Login(c echo.Context) error {
 	// Create security log
 	logService := services.NewSecurityLogsService(db)
 	log := models.SecurityLog{
-		UserID:    user.ID,
+		User:      *user,
 		Action:    "login",
 		IPAdress:  c.RealIP(),
 		UserAgent: c.Request().UserAgent(),
@@ -118,7 +121,7 @@ func Register(c echo.Context) error {
 	// Create security log
 	logService := services.NewSecurityLogsService(db)
 	log := models.SecurityLog{
-		UserID:    newUser.ID,
+		User:      *newUser,
 		Action:    "register",
 		IPAdress:  c.RealIP(),
 		UserAgent: c.Request().UserAgent(),
@@ -139,10 +142,14 @@ func Logout(c echo.Context) error {
 		return err
 	}
 
+	user := &models.User{
+		ID: userID,
+	}
+
 	// Create security log
 	logService := services.NewSecurityLogsService(db)
 	log := models.SecurityLog{
-		UserID:    userID,
+		User:      *user,
 		Action:    "logout",
 		IPAdress:  c.RealIP(),
 		UserAgent: c.Request().UserAgent(),
@@ -167,9 +174,12 @@ func Logout(c echo.Context) error {
 	})
 
 	// Clear possible context variables
+	c.Set("authenticated", nil)
 	c.Set("userID", nil)
 	c.Set("name", nil)
+	c.Set("email", nil)
 	c.Set("avatar", nil)
+	c.Set("is_admin", nil)
 
 	c.Response().Header().Set("HX-Redirect", "/")
 	return c.NoContent(http.StatusOK)

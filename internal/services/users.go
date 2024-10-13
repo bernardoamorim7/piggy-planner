@@ -2,6 +2,7 @@ package services
 
 import (
 	"errors"
+	"time"
 
 	"piggy-planner/internal/database"
 	"piggy-planner/internal/models"
@@ -37,7 +38,7 @@ type userService struct {
 }
 
 func (s *userService) GetByEmail(email string) (*models.User, error) {
-	query := "SELECT id, name, email, password, avatar FROM users WHERE email = ?"
+	query := "SELECT id, name, email, password, avatar, is_admin FROM users WHERE email = ?"
 
 	stmt, err := s.DB.Prepare(query)
 	if err != nil {
@@ -48,7 +49,7 @@ func (s *userService) GetByEmail(email string) (*models.User, error) {
 
 	user := &models.User{}
 
-	err = row.Scan(&user.ID, &user.Name, &user.Email, &user.Password, &user.Avatar)
+	err = row.Scan(&user.ID, &user.Name, &user.Email, &user.Password, &user.Avatar, &user.IsAdmin)
 	if err != nil {
 		return nil, err
 	}
@@ -57,7 +58,7 @@ func (s *userService) GetByEmail(email string) (*models.User, error) {
 }
 
 func (s *userService) GetByID(id uint64) (*models.User, error) {
-	query := "SELECT id, name, email, password, avatar FROM users WHERE id = ?"
+	query := "SELECT id, name, email, password, avatar, is_admin FROM users WHERE id = ?"
 
 	stmt, err := s.DB.Prepare(query)
 	if err != nil {
@@ -66,7 +67,7 @@ func (s *userService) GetByID(id uint64) (*models.User, error) {
 
 	row := stmt.QueryRow(id)
 	user := &models.User{}
-	err = row.Scan(&user.ID, &user.Name, &user.Email, &user.Password, &user.Avatar)
+	err = row.Scan(&user.ID, &user.Name, &user.Email, &user.Password, &user.Avatar, &user.IsAdmin)
 	if err != nil {
 		return nil, err
 	}
@@ -151,14 +152,16 @@ func (s *userService) Update(user *models.User) error {
 		return err
 	}
 
-	query := "UPDATE users SET name = ?, email = ?, password = ?, avatar = ? WHERE id = ?"
+	query := "UPDATE users SET name = ?, email = ?, password = ?, avatar = ?, updated_at = ? WHERE id = ?"
 
 	stmt, err := s.DB.Prepare(query)
 	if err != nil {
 		return err
 	}
 
-	_, err = stmt.Exec(user.Name, user.Email, user.Password, user.ID, user.Avatar)
+	updateTime := time.Now()
+
+	_, err = stmt.Exec(user.Name, user.Email, user.Password, user.ID, user.Avatar, updateTime)
 	if err != nil {
 		return err
 	}

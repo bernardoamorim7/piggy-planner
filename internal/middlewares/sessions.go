@@ -48,6 +48,14 @@ func GetSessionVars() echo.MiddlewareFunc {
 				}
 			}
 
+			if sess.Values["is_admin"] != nil {
+				if value, ok := sess.Values["is_admin"].(bool); ok {
+					c.Set("is_admin", value)
+				} else {
+					slog.WarnContext(c.Request().Context(), "is_admin is not of type bool ("+fmt.Sprintf("%T", sess.Values["is_admin"])+")")
+				}
+			}
+
 			return next(c)
 		}
 	}

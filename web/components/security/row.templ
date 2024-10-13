@@ -1,0 +1,18 @@
+package incomes
+
+import (
+	"fmt"
+	"piggy-planner/internal/models"
+	"piggy-planner/web/components/utils"
+)
+
+templ Row(securityLog models.SecurityLog) {
+	<tr>
+		<td>{ fmt.Sprintf("%v", securityLog.ID) }</td>
+		<td>{ fmt.Sprintf("%v", securityLog.User.Name) }</td>
+		<td>{ fmt.Sprintf("%v", securityLog.Action) }</td>
+		<td>{ securityLog.IPAdress }</td>
+		<td>{ securityLog.UserAgent }</td>
+		<td>{ utils.ParseDate(securityLog.CreatedAt) }</td>
+	</tr>
+}

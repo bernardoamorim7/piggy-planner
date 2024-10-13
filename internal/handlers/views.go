@@ -63,3 +63,27 @@ func ObjectivesHandler(c echo.Context) error {
 		return render(c, http.StatusOK, web.Base())
 	}
 }
+
+func SecurityHandler(c echo.Context) error {
+	if c.Request().Header.Get("HX-Request") != "" {
+		return render(c, http.StatusOK, views.Security())
+	} else {
+		return render(c, http.StatusOK, web.Base())
+	}
+}
+
+func DatabaseHandler(c echo.Context) error {
+	if c.Request().Header.Get("HX-Request") != "" {
+		return render(c, http.StatusOK, views.Database())
+	} else {
+		return render(c, http.StatusOK, web.Base())
+	}
+}
+
+func RequestsHandler(c echo.Context) error {
+	if c.Request().Header.Get("HX-Request") != "" {
+		return render(c, http.StatusOK, views.Requests())
+	} else {
+		return render(c, http.StatusOK, web.Base())
+	}
+}

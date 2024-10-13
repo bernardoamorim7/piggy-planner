@@ -66,6 +66,11 @@ func (s *Server) RegisterRoutes() http.Handler {
 
 	e.GET("/modals/expenses/types/create", handlers.CreateExpenseTypeModalHandler, middlewares.Protected())
 
+	// Admin Views
+	e.GET("/security", handlers.SecurityHandler, middlewares.Protected(), middlewares.AdminOnly())
+	e.GET("/database", handlers.DatabaseHandler, middlewares.Protected(), middlewares.AdminOnly())
+	e.GET("/requests", handlers.RequestsHandler, middlewares.Protected(), middlewares.AdminOnly())
+
 	// API
 	api := e.Group("/api")
 
@@ -124,6 +129,11 @@ func (s *Server) RegisterRoutes() http.Handler {
 	// Charts
 	api.GET("/stats/incomes-chart", handlers.IncomesChartHandler, middlewares.Protected())
 	api.GET("/stats/expenses-chart", handlers.ExpensesChartHandler, middlewares.Protected())
+
+	// Admin
+	// Security
+	api.GET("/security", handlers.GetAllSecurityLogs, middlewares.Protected(), middlewares.AdminOnly())
+	api.POST("/security/search", handlers.GetSecurityLogsByUserName, middlewares.Protected(), middlewares.AdminOnly())
 
 	return e
 }
