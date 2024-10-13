@@ -1,4 +1,87 @@
 package views
 
-templ Database() {
+import "piggy-planner/web/icons"
+
+templ Database(dbHealth map[string]string) {
+	<main class="flex-1 overflow-y-auto pt-4 px-4" id="database">
+		<h1 class="text-xl font-semibold text-primary mb-2">Database</h1>
+		<div class="my-2"></div>
+		<h3 class="text-lg">Status: <span class="font-bold">{ dbHealth["status"] }</span></h3>
+		<h3 class="text-lg">Message: <span class="font-bold">{ dbHealth["message"] }</span></h3>
+		<div class="my-4"></div>
+		<div class="grid lg:grid-cols-4 mt-2 md:grid-cols-2 grid-cols-1 gap-6">
+			<div class="stats shadow bg-base-200">
+				<div class="stat">
+					<div class="stat-figure text-primary">
+						@icons.Lan()
+					</div>
+					<div class="stat-title">Open connections</div>
+					<div class="stat-value text-primary">{ dbHealth["open_connections"] }</div>
+				</div>
+			</div>
+			<div class="stats shadow bg-base-200">
+				<div class="stat">
+					<div class="stat-figure text-primary">
+						@icons.Cable()
+					</div>
+					<div class="stat-title">In use</div>
+					<div class="stat-value text-primary">{ dbHealth["in_use"] }</div>
+				</div>
+			</div>
+			<div class="stats shadow bg-base-200">
+				<div class="stat">
+					<div class="stat-figure text-primary">
+						@icons.Hotel()
+					</div>
+					<div class="stat-title">Idle</div>
+					<div class="stat-value text-primary">{ dbHealth["idle"] }</div>
+				</div>
+			</div>
+			<div class="stats shadow bg-base-200">
+				<div class="stat">
+					<div class="stat-figure text-primary">
+						@icons.Counter7()
+					</div>
+					<div class="stat-title">Wait count</div>
+					<div class="stat-value text-primary">{ dbHealth["wait_count"] }</div>
+				</div>
+			</div>
+			<div class="stats shadow bg-base-200">
+				<div class="stat">
+					<div class="stat-figure text-primary">
+						@icons.Hourglass()
+					</div>
+					<div class="stat-title">Wait duration</div>
+					<div class="stat-value text-primary">{ dbHealth["wait_duration"] }</div>
+				</div>
+			</div>
+			<div class="stats shadow bg-base-200">
+				<div class="stat">
+					<div class="stat-figure text-primary">
+						@icons.Cable()
+					</div>
+					<div class="stat-title">Max idle closed</div>
+					<div class="stat-value text-primary">{ dbHealth["max_idle_closed"] }</div>
+				</div>
+			</div>
+			<div class="stats shadow bg-base-200">
+				<div class="stat">
+					<div class="stat-figure text-primary">
+						@icons.Timelapse()
+					</div>
+					<div class="stat-title">Max lifetime closed</div>
+					<div class="stat-value text-primary">{ dbHealth["max_lifetime_closed"] }</div>
+				</div>
+			</div>
+			<div class="stats shadow bg-base-200">
+				<div class="stat">
+					<div class="stat-figure text-primary">
+						@icons.Weight()
+					</div>
+					<div class="stat-title">Database Size</div>
+					<div class="stat-value text-primary">{ dbHealth["db_size"] }</div>
+				</div>
+			</div>
+		</div>
+	</main>
 }

@@ -137,8 +137,6 @@ func (s *Server) RegisterRoutes() http.Handler {
 	api.GET("/security", handlers.GetAllSecurityLogs, middlewares.Protected(), middlewares.AdminOnly())
 	api.POST("/security/search", handlers.GetSecurityLogsByUserName, middlewares.Protected(), middlewares.AdminOnly())
 
-	// Database
-
 	// Requests
 	api.GET("/requests", handlers.RequestLogsHandler, middlewares.Protected(), middlewares.AdminOnly())
 	// api.GET("/requests/history", handlers.RequestHistoryHandler, middlewares.Protected(), middlewares.AdminOnly())

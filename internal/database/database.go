@@ -149,6 +149,23 @@ func (s *dbService) Health() map[string]string {
 		stats["message"] = "Many connections are being closed due to max lifetime, consider increasing max lifetime or revising the connection usage pattern."
 	}
 
+	// Query for database size (example for SQLite3)
+	var pageCount, pageSize int
+	err = s.db.QueryRowContext(ctx, "PRAGMA page_count").Scan(&pageCount)
+	if err != nil {
+		stats["db_size"] = "unknown"
+		log.Printf("Error fetching page count: %v", err)
+	} else {
+		err = s.db.QueryRowContext(ctx, "PRAGMA page_size").Scan(&pageSize)
+		if err != nil {
+			stats["db_size"] = "unknown"
+			log.Printf("Error fetching page size: %v", err)
+		} else {
+			dbSize := pageCount * pageSize
+			stats["db_size"] = fmt.Sprintf("%d bytes", dbSize)
+		}
+	}
+
 	return stats
 }
 

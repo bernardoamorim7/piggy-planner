@@ -9,7 +9,7 @@ before:
     - go mod tidy
 
 builds:
-  - id: build_noncgo
+  - id: build
     main: ./
     binary: piggy-planner
     ldflags:
@@ -26,18 +26,13 @@ builds:
       - arm
     goarm:
       - "7"
-    ignore:
-      - goos: windows
-        goarch: arm
-      - goos: darwin
-        goarch: arm
 
 release:
   draft: true
 
 archives:
-  - id: archive_noncgo
-    builds: [build_noncgo]
+  - id: archive
+    builds: [build]
     format: zip
     # files:
     #   - LICENSE.md
