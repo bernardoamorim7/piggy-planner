@@ -15,7 +15,7 @@ builds:
     ldflags:
       - -s -w -X github.com/bernardoamorim7/piggy-planner.Version={{ .Version }}
     env:
-      - CGO_ENABLED=1
+      - CGO_ENABLED=0
     goos:
       - linux
       - windows
@@ -23,6 +23,9 @@ builds:
     goarch:
       - amd64
       - arm64
+      - arm
+    goarm:
+      - "7"
 
 release:
   draft: true

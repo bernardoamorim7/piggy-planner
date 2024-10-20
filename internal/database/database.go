@@ -9,8 +9,8 @@ import (
 	"strconv"
 	"time"
 
-	_ "github.com/mattn/go-sqlite3"
 	"github.com/pressly/goose/v3"
+	_ "modernc.org/sqlite"
 )
 
 //go:embed migrations/**/*.sql
@@ -56,7 +56,7 @@ func New() (DbService, error) {
 		return dbInstance, nil
 	}
 
-	db, err := sql.Open("sqlite3", "./piggy_planner.db")
+	db, err := sql.Open("sqlite", "./piggy_planner.db")
 	if err != nil {
 		return nil, err
 	}
