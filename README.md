@@ -1,4 +1,4 @@
-# Piggy Planner
+# Piggy Planner 
 
 The self hosted and easy to use finance tracker.
 
@@ -6,7 +6,9 @@ Piggy Planner is a simple budgeting application that allows users to track their
 
 ## Usage
 
-Just download the latest release and run the executable. The application will start a web server on `localhost:8777` unless you specify a different address using an environment variable called `PIGGY_PORT`. The application will create a SQLite database in the current working directory called `piggy_planner.db`.
+Just download the latest release and run the executable.  
+The application will start a web server on `localhost:8777` unless you specify a different address using an environment variable called `PIGGY_PORT`.  
+The application will create a SQLite database in the current working directory called `piggy_planner.db`.
 
 ## Building from Source
 
@@ -48,7 +50,8 @@ templ generate && npx tailwindcss -i ./web/assets/css/input.css -o ./web/assets/
 
 ## Contributing
 
-Pull requests are welcome, but this project is a personal project and I may not have the time to review and merge them. If you find a bug or have a feature request, please open an issue.
+Pull requests are welcome, but this project is a personal project and I may not have the time to review and merge them.  
+If you find a bug or have a feature request, please open an issue.
 
 
 ## License
