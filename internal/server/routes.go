@@ -28,18 +28,22 @@ func (s *Server) RegisterRoutes() http.Handler {
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
 	e.Use(middleware.Gzip())
+	e.Use(middleware.Secure())
 
 	// Secret Key and Session Store
-	secretKey := os.Getenv("SECRET")
+	secretKey := os.Getenv("PIGGY_SECRET")
 	if secretKey == "" {
 		secretKey = generateSecretKey()
 		saveSecretKeyToEnv(secretKey)
 	}
 	sessionStore := sessions.NewCookieStore([]byte(secretKey))
-	isProduction := os.Getenv("ENV") == "production"
+	isProduction := os.Getenv("PIGGY_ENV") == "production"
 	sessionStore.Options = &sessions.Options{
+		Path:     "/",
+		MaxAge:   86400 * 7, // 7 days
+		HttpOnly: true,
 		Secure:   isProduction,
-		HttpOnly: isProduction,
+		SameSite: http.SameSiteLaxMode,
 	}
 	e.Use(session.Middleware(sessionStore))
 
@@ -199,7 +203,7 @@ func saveSecretKeyToEnv(secretKey string) {
 	}
 	defer file.Close()
 
-	if _, err := file.WriteString(fmt.Sprintf("SECRET=%s\n", secretKey)); err != nil {
+	if _, err := file.WriteString(fmt.Sprintf("PIGGY_SECRET=\"%s\"\n", secretKey)); err != nil {
 		log.Fatalf("Error writing to .env file: %v", err)
 	}
 }

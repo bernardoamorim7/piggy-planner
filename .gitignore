@@ -40,3 +40,6 @@ node_modules
 
 # database
 piggy_planner.db
+
+# local dockerfile
+Dockerfile-local

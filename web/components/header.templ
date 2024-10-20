@@ -8,7 +8,7 @@ import (
 templ Header() {
 	<header class="navbar bg-base-200">
 		<div class="navbar-start">
-			<label for="my-drawer-2" class="btn btn-base-300 rounded-lg mr-2 drawer-a lg:hidden">
+			<label for="my-drawer-2" class="btn btn-base-300 rounded-lg drawer-button lg:hidden">
 				@icons.Menu()
 			</label>
 			<button class="btn btn-ghost rounded-lg text-xl" hx-get="/" hx-trigger="click" hx-target="#main-content" hx-swap="innerHTML transition:true" hx-push-url="true">
