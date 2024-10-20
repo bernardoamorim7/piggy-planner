@@ -20,7 +20,7 @@ type Server struct {
 }
 
 func NewServer() *http.Server {
-	port, err := strconv.Atoi(os.Getenv("PORT"))
+	port, err := strconv.Atoi(os.Getenv("PIGGY_PORT"))
 	if err != nil {
 		port = 8777
 	}
