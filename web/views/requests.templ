@@ -6,34 +6,120 @@ import (
 )
 
 templ Requests() {
-	<div class="container mx-auto p-4">
-		<h1 class="text-2xl font-bold mb-4">Recent Requests</h1>
-		// <div class="my-2"></div>
-		// <canvas id="requestsChart" class="w-full border-solid border-primary"></canvas>
-		// <div class="my-4"></div>
-		<table class="table w-full" id="requests-table" hx-get="/api/requests" hx-trigger="load, every 10s" hx-target="#requests-table tbody" hx-swap="afterbegin">
-			<thead>
-				<tr>
-					<th>Method</th>
-					<th>URL</th>
-					<th>Remote Address</th>
-					<th>Timestamp</th>
-				</tr>
-			</thead>
-			<tbody>
-				@requestsComponents.RequestLogRows(middlewares.GetRequestLogs())
-			</tbody>
-		</table>
-	</div>
-	<script>
-		// Remove old rows from the table (keep only the most recent 10 requests)
-		document.addEventListener('htmx:afterRequest', function(){
-			const tbody = document.querySelector('#requests-table tbody');
-			if (tbody) {
-				while (tbody.rows.length > 10) {
-					tbody.deleteRow(tbody.rows.length - 1);
-				}
+	<main class="flex-1 overflow-y-auto pt-4 px-4" id="requests">
+		<h1 class="text-xl font-semibold text-primary mb-2">Requests Logs</h1>
+		<canvas id="requestsChart" class="w-full h-16 border-solid border-primary"></canvas>
+		<script>
+			async function fetchRequestLogs() {
+				const response = await fetch('/api/requests/history');
+				const data = await response.json();
+				return data;
 			}
-		});
-	</script>
+
+			async function processLogs(logs) {
+				const now = new Date();
+				now.setSeconds(0, 0); // Round to the nearest minute
+				const intervals = Array.from({ length: 96 }, (_, i) => {
+					const date = new Date(now - i * 15 * 60000);
+					date.setMinutes(Math.floor(date.getMinutes() / 15) * 15, 0, 0); // Round to the nearest 15 minutes
+					return date;
+				}).reverse();
+				const counts = Array(96).fill(0); // 96 intervals of 15 minutes in 24 hours
+
+				logs.forEach(log => {
+					const logTime = new Date(log.Timestamp);
+					const diffMinutes = Math.floor((now - logTime) / 60000);
+					if (diffMinutes < 1440) {
+						const intervalIndex = Math.floor(diffMinutes / 15);
+						counts[95 - intervalIndex]++; // Reverse the index to match the intervals array
+					}
+				});
+
+				const labels = intervals.map(date => {
+					return `${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}`;
+				});
+
+				return {
+					labels: labels,
+					data: counts
+				};
+			}
+
+			async function renderChart() {
+				const logs = await fetchRequestLogs();
+				const processedData = await processLogs(logs);
+
+				const ctx = document.getElementById('requestsChart').getContext('2d');
+				new Chart(ctx, {
+					type: 'line',
+					data: {
+						labels: processedData.labels,
+						datasets: [{
+							label: 'Requests',
+							data: processedData.data,
+							borderColor: 'rgba(94, 129, 172, 1)',
+							borderWidth: 1,
+							fill: false
+						}]
+					},
+					options: {
+						scales: {
+							x: {
+								title: {
+									display: true,
+									text: 'Time (HH:MM)'
+								},
+								ticks: {
+									autoSkip: false,
+									maxTicksLimit: 96, // 24 hours * 4 (15-minute intervals)
+									callback: function(value, index, values) {
+												return processedData.labels[index];
+											}
+                        		}
+							},
+							y: {
+								beginAtZero: true,
+								title: {
+									display: true,
+									text: 'Number of Requests'
+								},
+								ticks: {
+									stepSize: 1
+								}
+							}
+						}
+					}
+				});
+			}
+
+			renderChart();
+    	</script>
+		<div class="my-2"></div>
+		<div class="overflow-x-auto">
+			<table class="table table-xs text-neutral text-center items-center align-middle break-all lg:table-lg">
+				<thead>
+					<tr>
+						<th>Method</th>
+						<th>URL</th>
+						<th>Remote Address</th>
+						<th>Timestamp</th>
+					</tr>
+				</thead>
+				<tbody id="table-body" hx-get="/api/requests" hx-trigger="load, every 10s" hx-target="#table-body" hx-swap="afterbegin">
+					@requestsComponents.RequestLogRows(middlewares.GetRequestLogs())
+				</tbody>
+				<script>
+					// Remove old rows from the table (keep only the most recent 10 requests)
+					document.addEventListener('htmx:afterRequest', function(){
+						const tbody = document.querySelector('#table-body');
+						if (tbody) {
+							while (tbody.rows.length > 10) {
+								tbody.deleteRow(tbody.rows.length - 1);
+							}
+						}
+					});
+				</script>
+			</table>
+		</div>
+	</main>
 }

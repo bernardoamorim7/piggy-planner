@@ -14,3 +14,9 @@ func RequestLogsHandler(c echo.Context) error {
 
 	return render(c, http.StatusOK, requestComponents.RequestLogRows(requestLogs))
 }
+
+func RequestHistoryHandler(c echo.Context) error {
+	requestLogs := middlewares.GetRequestLogs()
+
+	return c.JSON(http.StatusOK, requestLogs)
+}

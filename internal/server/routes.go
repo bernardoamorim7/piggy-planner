@@ -68,7 +68,11 @@ func (s *Server) RegisterRoutes() http.Handler {
 
 	e.GET("/modals/expenses/types/create", handlers.CreateExpenseTypeModalHandler, middlewares.Protected())
 
+	e.GET("/modals/users/update/:id", handlers.UpdateUserModalHandler, middlewares.Protected(), middlewares.AdminOnly())
+	e.GET("/modals/users/delete/:id", handlers.DeleteUserModalHandler, middlewares.Protected(), middlewares.AdminOnly())
+
 	// Admin Views
+	e.GET("/users", handlers.UsersHandler, middlewares.Protected(), middlewares.AdminOnly())
 	e.GET("/security", handlers.SecurityHandler, middlewares.Protected(), middlewares.AdminOnly())
 	e.GET("/database", handlers.DatabaseHandler, middlewares.Protected(), middlewares.AdminOnly())
 	e.GET("/requests", handlers.RequestsHandler, middlewares.Protected(), middlewares.AdminOnly())
@@ -120,6 +124,13 @@ func (s *Server) RegisterRoutes() http.Handler {
 	//api.PUT("/objectives/types", handlers.UpdateObjectiveType, middlewares.Protected())
 	//api.DELETE("/objectives/types", handlers.DeleteObjectiveType, middlewares.Protected())
 
+	// Users
+	api.GET("/users", handlers.GetAllUsers, middlewares.Protected(), middlewares.AdminOnly())
+	api.POST("/users/search", handlers.GetUserByName, middlewares.Protected(), middlewares.AdminOnly())
+	api.GET("/users/user/:id", handlers.GetUserByID, middlewares.Protected(), middlewares.AdminOnly())
+	api.PUT("/users", handlers.UpdateUser, middlewares.Protected(), middlewares.AdminOnly())
+	api.DELETE("/users", handlers.DeleteUser, middlewares.Protected(), middlewares.AdminOnly())
+
 	// Dasbhboard Stats
 	// Stat cards
 	api.GET("/stats/balance", handlers.BalanceHandler, middlewares.Protected())
@@ -139,7 +150,7 @@ func (s *Server) RegisterRoutes() http.Handler {
 
 	// Requests
 	api.GET("/requests", handlers.RequestLogsHandler, middlewares.Protected(), middlewares.AdminOnly())
-	// api.GET("/requests/history", handlers.RequestHistoryHandler, middlewares.Protected(), middlewares.AdminOnly())
+	api.GET("/requests/history", handlers.RequestHistoryHandler, middlewares.Protected(), middlewares.AdminOnly())
 
 	return e
 }

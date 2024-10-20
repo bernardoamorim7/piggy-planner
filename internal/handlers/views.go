@@ -92,3 +92,11 @@ func RequestsHandler(c echo.Context) error {
 		return render(c, http.StatusOK, web.Base())
 	}
 }
+
+func UsersHandler(c echo.Context) error {
+	if c.Request().Header.Get("HX-Request") != "" {
+		return render(c, http.StatusOK, views.Users())
+	} else {
+		return render(c, http.StatusOK, web.Base())
+	}
+}

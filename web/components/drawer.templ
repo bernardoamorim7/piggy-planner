@@ -40,6 +40,12 @@ templ Drawer() {
 				if ctx.Value("is_admin") == true {
 					<div class="divider font-semibold">Admin</div>
 					<li class="bg-base-300 rounded-lg mb-2">
+						<button class="text-xl" hx-get="/users" hx-trigger="click" hx-target="#main-content" hx-swap="innerHTML transition:true" hx-push-url="true">
+							@icons.Groups()
+							Users
+						</button>
+					</li>
+					<li class="bg-base-300 rounded-lg mb-2">
 						<button class="text-xl" hx-get="/security" hx-trigger="click" hx-target="#main-content" hx-swap="innerHTML transition:true" hx-push-url="true">
 							@icons.Security()
 							Security

@@ -1,0 +1,45 @@
+package components
+
+import (
+	"fmt"
+	"piggy-planner/internal/models"
+	"piggy-planner/web/icons"
+)
+
+templ UserRow(user models.User) {
+	<tr>
+		<td>{ fmt.Sprintf("%v", user.ID) }</td>
+		<td>{ user.Name }</td>
+		<td>{ user.Email }</td>
+		<td><img src={ user.Avatar } alt={ fmt.Sprintf("%v's avatar", user.Name) } class="mx-auto w-16 h-16 rounded"/></td>
+		if user.IsAdmin == true {
+			<td>Yes</td>
+		} else {
+			<td>No</td>
+		}
+		<td>
+			<button
+				type="button"
+				class="btn btn-sm btn-warning rounded-lg"
+				hx-get={ fmt.Sprintf("/modals/users/update/%v", user.ID) }
+				hx-trigger="click"
+				hx-target="#usersModals"
+				hx-on::after-request="document.getElementById('updateUserModal').showModal()"
+			>
+				@icons.Edit()
+			</button>
+			if user.ID != 1 {
+				<button
+					type="button"
+					class="btn btn-sm btn-error rounded-lg"
+					hx-get={ fmt.Sprintf("/modals/users/delete/%v", user.ID) }
+					hx-trigger="click"
+					hx-target="#usersModals"
+					hx-on::after-request="document.getElementById('deleteUserModal').showModal()"
+				>
+					@icons.Delete()
+				</button>
+			}
+		</td>
+	</tr>
+}

@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"piggy-planner/internal/database"
 	"piggy-planner/internal/services"
+	"sort"
 	"time"
 
 	"github.com/labstack/echo/v4"
@@ -191,9 +192,17 @@ func IncomesChartHandler(c echo.Context) error {
 		values = append(values, total)
 	}
 
+	// Sort the labels by alphabetical order so it's always the same order
+	// when the chart is rendered
+	sort.Strings(labels)
+	sortedValues := make([]float64, len(values))
+	for i, label := range labels {
+		sortedValues[i] = incomeMap[label][0]
+	}
+
 	// Convert labels and values to JSON format for the chart
 	labelsJSON, _ := json.Marshal(labels)
-	valuesJSON, _ := json.Marshal(values)
+	valuesJSON, _ := json.Marshal(sortedValues)
 
 	chart := fmt.Sprintf(`
     <canvas id="incomesChart" width="400" height="400"></canvas>
@@ -282,9 +291,17 @@ func ExpensesChartHandler(c echo.Context) error {
 		values = append(values, total)
 	}
 
+	// Sort the labels by alphabetical order so it's always the same order
+	// when the chart is rendered
+	sort.Strings(labels)
+	sortedValues := make([]float64, len(values))
+	for i, label := range labels {
+		sortedValues[i] = expenseMap[label][0]
+	}
+
 	// Convert labels and values to JSON format for the chart
 	labelsJSON, _ := json.Marshal(labels)
-	valuesJSON, _ := json.Marshal(values)
+	valuesJSON, _ := json.Marshal(sortedValues)
 
 	chart := fmt.Sprintf(`
     <canvas id="expensesChart" width="400" height="400"></canvas>

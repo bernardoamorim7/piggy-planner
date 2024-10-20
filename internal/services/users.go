@@ -24,6 +24,12 @@ type UserService interface {
 
 	// GetByID returns a user by ID.
 	GetByID(id uint64) (*models.User, error)
+
+	// GetAll returns all users.
+	GetAll() ([]models.User, error)
+
+	// GetByUserName returns a user by username.
+	GetByUserName(userName string) ([]models.User, error)
 }
 
 // NewUserService creates a new user service.
@@ -108,7 +114,7 @@ func (s *userService) Create(user *models.User) error {
 		user.IsAdmin = false
 	}
 
-	query := "INSERT INTO users (name, email, password, avatar) VALUES (?, ?, ?, ?)"
+	query := "INSERT INTO users (name, email, password, avatar, is_admin) VALUES (?, ?, ?, ?, ?)"
 
 	stmt, err := s.DB.Prepare(query)
 	if err != nil {
@@ -152,7 +158,7 @@ func (s *userService) Update(user *models.User) error {
 		return err
 	}
 
-	query := "UPDATE users SET name = ?, email = ?, password = ?, avatar = ?, updated_at = ? WHERE id = ?"
+	query := "UPDATE users SET name = ?, email = ?, password = ?, avatar = ?, is_admin = ?, updated_at = ? WHERE id = ?"
 
 	stmt, err := s.DB.Prepare(query)
 	if err != nil {
@@ -161,7 +167,9 @@ func (s *userService) Update(user *models.User) error {
 
 	updateTime := time.Now()
 
-	_, err = stmt.Exec(user.Name, user.Email, user.Password, user.ID, user.Avatar, updateTime)
+	user.Avatar = "https://api.dicebear.com/8.x/thumbs/png?seed=" + user.Name
+
+	_, err = stmt.Exec(user.Name, user.Email, user.Password, user.Avatar, user.IsAdmin, updateTime, user.ID)
 	if err != nil {
 		return err
 	}
@@ -183,4 +191,60 @@ func (s *userService) Delete(id uint64) error {
 	}
 
 	return nil
+}
+
+func (s *userService) GetAll() ([]models.User, error) {
+	query := "SELECT id, name, email, password, avatar, is_admin FROM users"
+
+	stmt, err := s.DB.Prepare(query)
+	if err != nil {
+		return nil, err
+	}
+
+	rows, err := stmt.Query()
+	if err != nil {
+		return nil, err
+	}
+
+	users := []models.User{}
+
+	for rows.Next() {
+		user := models.User{}
+		err := rows.Scan(&user.ID, &user.Name, &user.Email, &user.Password, &user.Avatar, &user.IsAdmin)
+		if err != nil {
+			return nil, err
+		}
+		users = append(users, user)
+	}
+
+	return users, nil
+}
+
+func (s *userService) GetByUserName(userName string) ([]models.User, error) {
+	query := "SELECT id, name, email, password, avatar, is_admin FROM users WHERE name LIKE ?"
+
+	stmt, err := s.DB.Prepare(query)
+	if err != nil {
+		return nil, err
+	}
+
+	userName = "%" + userName + "%"
+
+	rows, err := stmt.Query(userName)
+	if err != nil {
+		return nil, err
+	}
+
+	users := []models.User{}
+
+	for rows.Next() {
+		user := models.User{}
+		err := rows.Scan(&user.ID, &user.Name, &user.Email, &user.Password, &user.Avatar, &user.IsAdmin)
+		if err != nil {
+			return nil, err
+		}
+		users = append(users, user)
+	}
+
+	return users, nil
 }

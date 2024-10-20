@@ -1,0 +1,78 @@
+package components
+
+import (
+	"fmt"
+	"piggy-planner/internal/models"
+	"piggy-planner/web/icons"
+)
+
+templ UpdateUserModal(user models.User) {
+	<dialog id="updateUserModal" class="modal modal-bottom sm:modal-middle" @close="window.location.reload()">
+		<div class="modal-box">
+			<h3 class="text-lg font-bold">
+				Update User
+			</h3>
+			<p class="py-4"></p>
+			<form
+				id="updateUserForm"
+				class="flex flex-col gap-4"
+				hx-put="/api/users"
+				hx-ext="response-targets"
+				hx-target-error="#err"
+			>
+				<input type="hidden" name="id" value={ fmt.Sprintf("%v", user.ID) }/>
+				<input type="hidden" name="oldName" value={ user.Name }/>
+				<input type="hidden" name="oldEmail" value={ user.Email }/>
+				if user.IsAdmin {
+					<input type="hidden" name="oldIsAdmin" value="true"/>
+				} else {
+					<input type="hidden" name="oldIsAdmin" value="false"/>
+				}
+				<label class="input input-bordered flex items-center gap-2 rounded-lg">
+					@icons.Person()
+					<input type="text" class="grow" placeholder="Name" name="name" value={ user.Name } required/>
+				</label>
+				<label class="input input-bordered flex items-center gap-2 rounded-lg">
+					@icons.Mail()
+					<input type="email" class="grow" placeholder="Email" name="email" value={ user.Email } required/>
+				</label>
+				<label class="input input-bordered flex items-center gap-2 rounded-lg">
+					@icons.Password()
+					<input type="password" class="grow" placeholder="New Password" name="password" value=""/>
+				</label>
+				<div class="form-control">
+					<label class="label cursor-pointer">
+						<span class="label-text">Admin</span>
+						<input id="isAdminToggle" type="checkbox" class="toggle" name="isAdmin" value={ fmt.Sprintf("%v", user.IsAdmin) }/>
+					</label>
+				</div>
+				<p class="text-center my-4 text-error h-4 max-w-64 break-all" id="err"></p>
+			</form>
+			<div class="modal-action">
+				<form method="dialog">
+					<button class="btn btn-error rounded-lg">
+						Cancel
+						@icons.Close()
+					</button>
+				</form>
+				<button class="btn btn-success rounded-lg" type="submit" form="updateUserForm">
+					Update
+					@icons.Upgrade()
+				</button>
+			</div>
+		</div>
+		<script>
+			const isAdminToggle = document.getElementById('isAdminToggle');
+			if (isAdminToggle) {
+				isAdminToggle.checked = isAdminToggle.value === 'true';
+				isAdminToggle.addEventListener('change', function() {
+					if (isAdminToggle.checked) {
+						isAdminToggle.value = 'true';
+					} else {
+						isAdminToggle.value = 'false';
+					}
+				});
+			}
+		</script>
+	</dialog>
+}
