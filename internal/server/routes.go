@@ -1,6 +1,10 @@
 package server
 
 import (
+	"crypto/rand"
+	"encoding/base64"
+	"fmt"
+	"log"
 	"net/http"
 	"os"
 
@@ -23,11 +27,22 @@ func (s *Server) RegisterRoutes() http.Handler {
 	e := echo.New()
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
-	e.Use(session.Middleware(sessions.NewCookieStore([]byte(os.Getenv("SECRET")))))
+	e.Use(middleware.Gzip())
+
+	// Secret Key
+	secretKey := os.Getenv("SECRET")
+	if secretKey == "" {
+		secretKey = generateSecretKey()
+		saveSecretKeyToEnv(secretKey)
+	}
+	e.Use(session.Middleware(sessions.NewCookieStore([]byte(secretKey))))
+
+	// FileServer
 	fileServer := http.FileServer(http.FS(web.Files))
+
+	// Custom Middleware
 	e.Use(middlewares.GetSessionVars())
 	e.Use(middlewares.RequestLogger())
-	e.Use(middleware.Gzip())
 
 	// i18n
 	e.Use(middlewares.I18NMiddleware())
@@ -161,4 +176,24 @@ func (s *Server) RegisterRoutes() http.Handler {
 	api.GET("/requests/history", handlers.RequestHistoryHandler, middlewares.Protected(), middlewares.AdminOnly())
 
 	return e
+}
+
+func generateSecretKey() string {
+	key := make([]byte, 32)
+	if _, err := rand.Read(key); err != nil {
+		log.Fatalf("Error generating secret key: %v", err)
+	}
+	return base64.StdEncoding.EncodeToString(key)
+}
+
+func saveSecretKeyToEnv(secretKey string) {
+	file, err := os.OpenFile(".env", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+	if err != nil {
+		log.Fatalf("Error opening .env file: %v", err)
+	}
+	defer file.Close()
+
+	if _, err := file.WriteString(fmt.Sprintf("SECRET=%s\n", secretKey)); err != nil {
+		log.Fatalf("Error writing to .env file: %v", err)
+	}
 }
