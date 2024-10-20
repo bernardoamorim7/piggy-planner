@@ -15,7 +15,7 @@ builds:
     ldflags:
       - -s -w -X github.com/bernardoamorim7/piggy-planner.Version={{ .Version }}
     env:
-      - CGO_ENABLED=0
+      - CGO_ENABLED=1
     goos:
       - linux
       - windows
