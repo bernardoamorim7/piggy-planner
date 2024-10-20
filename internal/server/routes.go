@@ -29,13 +29,19 @@ func (s *Server) RegisterRoutes() http.Handler {
 	e.Use(middleware.Recover())
 	e.Use(middleware.Gzip())
 
-	// Secret Key
+	// Secret Key and Session Store
 	secretKey := os.Getenv("SECRET")
 	if secretKey == "" {
 		secretKey = generateSecretKey()
 		saveSecretKeyToEnv(secretKey)
 	}
-	e.Use(session.Middleware(sessions.NewCookieStore([]byte(secretKey))))
+	sessionStore := sessions.NewCookieStore([]byte(secretKey))
+	isProduction := os.Getenv("ENV") == "production"
+	sessionStore.Options = &sessions.Options{
+		Secure:   isProduction,
+		HttpOnly: true,
+	}
+	e.Use(session.Middleware(sessionStore))
 
 	// FileServer
 	fileServer := http.FileServer(http.FS(web.Files))
