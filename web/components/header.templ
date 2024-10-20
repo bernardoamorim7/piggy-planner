@@ -1,6 +1,9 @@
 package components
 
-import "piggy-planner/web/icons"
+import (
+	"github.com/invopop/ctxi18n/i18n"
+	"piggy-planner/web/icons"
+)
 
 templ Header() {
 	<header class="navbar bg-base-200">
@@ -14,7 +17,7 @@ templ Header() {
 			</button>
 		</div>
 		<div class="navbar-end">
-			<p class="mr-2">Welcome, { ctx.Value("name").(string) }!</p>
+			<p class="mr-2">{ i18n.T(ctx, "welcome") }, { ctx.Value("name").(string) }!</p>
 			<details class="dropdown dropdown-end">
 				<summary class="btn btn-ghost btn-circle avatar">
 					<img src={ ctx.Value("avatar").(string) } alt={ ctx.Value("name").(string) + "'s avatar" } class="rounded-full"/>
@@ -23,21 +26,21 @@ templ Header() {
 					<li>
 						<button type="button" class="btn btn-sm btn-neutral rounded-lg" hx-get="/profile" hx-trigger="click" hx-target="#main-content" hx-swap="innerHTML transition:true" hx-push-url="true">
 							@icons.Person()
-							Profile
+							{ i18n.T(ctx, "profile") }
 						</button>
 					</li>
 					<div class="my-1"></div>
 					// <li>
 					// 	<button type="button" class="btn btn-sm btn-neutral rounded-lg" hx-get="/settings" hx-trigger="click" hx-target="#main-content" hx-swap="innerHTML transition:true" hx-push-url="true">
 					// 		@icons.Settings()
-					// 		Settings
+					// 		{ i18n.T(ctx, "settings") }
 					// 	</button>
 					// </li>
 					// <div class="my-1"></div>
 					<li>
 						<button type="button" class="btn btn-sm btn-neutral rounded-lg" hx-post="/logout" hx-trigger="click">
 							@icons.Logout()
-							Logout
+							{ i18n.T(ctx, "logout") }
 						</button>
 					</li>
 				</ul>

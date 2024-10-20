@@ -1,6 +1,9 @@
 package web
 
-import "piggy-planner/web/icons"
+import (
+	"github.com/invopop/ctxi18n/i18n"
+	"piggy-planner/web/icons"
+)
 
 templ Login() {
 	<!DOCTYPE html>
@@ -38,14 +41,14 @@ templ Login() {
 								<figure class="w-8 h-8 mr-2" aria-label="Password">
 									@icons.Password()
 								</figure>
-								<input class="input input-bordered shadow-lg" type="password" name="password" id="password" placeholder="Password" required/>
+								<input class="input input-bordered shadow-lg" type="password" name="password" id="password" placeholder={ i18n.T(ctx, "password") } required/>
 							</div>
 							<button class="btn btn-primary rounded-lg mt-4" type="submit" name="login" id="login">Login</button>
 							<p class="text-center my-4 text-error h-4 max-w-64 break-all" id="err"></p>
 						</form>
 					</div>
 					<div class="my-2"></div>
-					<p class="text-center">Don't have an account yet? <a href="/register" class="text-primary">Register here!</a></p>
+					<p class="text-center">{ i18n.T(ctx, "noAccount") } <a href="/register" class="text-primary">{ i18n.T(ctx, "registerHere") }</a></p>
 				</div>
 			</main>
 		</body>

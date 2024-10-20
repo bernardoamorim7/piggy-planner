@@ -1,13 +1,14 @@
 package views
 
 import (
+	"github.com/invopop/ctxi18n/i18n"
 	"piggy-planner/internal/middlewares"
 	requestsComponents "piggy-planner/web/components/requests"
 )
 
 templ Requests() {
 	<main class="flex-1 overflow-y-auto pt-4 px-4" id="requests">
-		<h1 class="text-xl font-semibold text-primary mb-2">Requests Logs</h1>
+		<h1 class="text-xl font-semibold text-primary mb-2">{ i18n.T(ctx, "requests") }</h1>
 		<canvas id="requestsChart" class="w-full h-16 border-solid border-primary"></canvas>
 		<script>
 			async function fetchRequestLogs() {
@@ -99,10 +100,10 @@ templ Requests() {
 			<table class="table table-xs text-neutral text-center items-center align-middle break-all lg:table-lg">
 				<thead>
 					<tr>
-						<th>Method</th>
+						<th>{ i18n.T(ctx, "method") }</th>
 						<th>URL</th>
-						<th>Remote Address</th>
-						<th>Timestamp</th>
+						<th>{ i18n.T(ctx, "remoteAddress") }</th>
+						<th>{ i18n.T(ctx, "timestamp") }</th>
 					</tr>
 				</thead>
 				<tbody id="table-body" hx-get="/api/requests" hx-trigger="load, every 10s" hx-target="#table-body" hx-swap="afterbegin">

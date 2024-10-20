@@ -1,10 +1,13 @@
 package views
 
-import "piggy-planner/web/icons"
+import (
+	"github.com/invopop/ctxi18n/i18n"
+	"piggy-planner/web/icons"
+)
 
 templ Security() {
 	<main class="flex-1 overflow-y-auto pt-4 px-4" id="security">
-		<h1 class="text-xl font-semibold text-primary mb-2">Security Logs</h1>
+		<h1 class="text-xl font-semibold text-primary mb-2">{ i18n.T(ctx, "securityLogs") }</h1>
 		<div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
 			<div class="join">
 				<div class="bg-primary join-item text-center rounded-lg px-4 flex flex-wrap flex-shrink items-center justify-center">
@@ -13,7 +16,7 @@ templ Security() {
 				<input
 					id="search"
 					type="search"
-					placeholder="Search security logs..."
+					placeholder={ i18n.T(ctx, "searchSecurity") }
 					class="input input-bordered w-full max-w-xs join-item rounded-lg"
 					name="search"
 					hx-post="/api/security/search"
@@ -32,11 +35,11 @@ templ Security() {
 				<thead>
 					<tr>
 						<th>ID</th>
-						<th>User</th>
-						<th>Action</th>
-						<th>IP Address</th>
-						<th>User Agent</th>
-						<th>Created At</th>
+						<th>{ i18n.T(ctx, "user") }</th>
+						<th>{ i18n.T(ctx, "action") }</th>
+						<th>{ i18n.T(ctx, "ipAddress") }</th>
+						<th>{ i18n.T(ctx, "userAgent") }</th>
+						<th>{ i18n.T(ctx, "createdAt") }</th>
 					</tr>
 				</thead>
 				<tbody id="table-body" hx-get="/api/security" hx-trigger="load" hx-target="#table-body" hx-ext="response-targets" hx-target-404="#table-body"></tbody>

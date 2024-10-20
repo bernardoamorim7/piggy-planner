@@ -2,11 +2,12 @@ package incomes
 
 import (
 	"fmt"
+	"github.com/invopop/ctxi18n/i18n"
 	"piggy-planner/internal/models"
 )
 
 templ IncomeTypesOptions(incomesTypes []models.IncomeType) {
-	<option value="0" default disabled selected>Select Income Type</option>
+	<option value="0" default disabled selected>{ i18n.T(ctx, "select") } { i18n.T(ctx, "incomeType") }</option>
 	for _, incomeType := range incomesTypes {
 		<option value={ fmt.Sprintf("%v", incomeType.ID) }>{ incomeType.Name }</option>
 	}

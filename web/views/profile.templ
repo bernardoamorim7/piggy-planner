@@ -1,10 +1,13 @@
 package views
 
-import "piggy-planner/web/icons"
+import (
+	"github.com/invopop/ctxi18n/i18n"
+	"piggy-planner/web/icons"
+)
 
 templ Profile() {
 	<main class="flex-1 overflow-y-auto pt-4 px-4" id="profile">
-		<h1 class="text-xl font-semibold text-primary mb-2">Profile</h1>
+		<h1 class="text-xl font-semibold text-primary mb-2">{ i18n.T(ctx, "profile") }</h1>
 		<div class="card lg:card-side bg-base-100 mt-8">
 			//<img src={ ctx.Value("avatar").(string) } class="rounded-lg" alt={ fmt.Sprintf("%v's avatar", ctx.Value("name").(string)) }/>
 			<div class="card-body justify-center" id="form">
@@ -19,11 +22,11 @@ templ Profile() {
 						<figure class="w-8 h-8 mr-2" aria-label="Name">
 							@icons.Person()
 						</figure>
-						<input class="input input-bordered shadow-lg rounded-lg" type="text" name="name" id="name" placeholder="Name" required value={ ctx.Value("name").(string) }/>
+						<input class="input input-bordered shadow-lg rounded-lg" type="text" name="name" id="name" placeholder={ i18n.T(ctx, "name") } required value={ ctx.Value("name").(string) }/>
 					</div>
 					<input type="hidden" name="oldEmail" value={ ctx.Value("email").(string) }/>
 					<input type="hidden" name="oldName" value={ ctx.Value("name").(string) }/>
-					<button class="btn btn-primary mt-4 rounded-lg" type="submit" id="update">Update</button>
+					<button class="btn btn-primary mt-4 rounded-lg" type="submit" id="update">{ i18n.T(ctx, "update") }</button>
 				</form>
 			</div>
 		</div>

@@ -25,13 +25,13 @@ func ProfileHandler(c echo.Context) error {
 	}
 }
 
-func SettingsHandler(c echo.Context) error {
-	if c.Request().Header.Get("HX-Request") != "" {
-		return render(c, http.StatusOK, views.Settings())
-	} else {
-		return render(c, http.StatusOK, web.Base())
-	}
-}
+// func SettingsHandler(c echo.Context) error {
+// 	if c.Request().Header.Get("HX-Request") != "" {
+// 		return render(c, http.StatusOK, views.Settings())
+// 	} else {
+// 		return render(c, http.StatusOK, web.Base())
+// 	}
+// }
 
 func NotFoundHandler(c echo.Context) error {
 	if c.Request().Header.Get("HX-Request") != "" {

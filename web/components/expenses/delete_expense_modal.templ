@@ -2,6 +2,7 @@ package expenses
 
 import (
 	"fmt"
+	"github.com/invopop/ctxi18n/i18n"
 	"piggy-planner/web/icons"
 )
 
@@ -16,13 +17,13 @@ templ DeleteExpenseModal(expenseID uint64) {
 			<h3
 				id="deleteExpenseModalTitle"
 				class="font-bold text-xl text-center mb-2"
-			>Delete Expense?</h3>
+			>{ i18n.T(ctx, "delete") } { i18n.T(ctx, "expense") } ?</h3>
 			<div class="modal-action items-center content-center justify-center">
 				<form method="dialog">
 					<button
 						class="btn btn-error normal-case rounded-lg"
 					>
-						Cancel
+						{ i18n.T(ctx, "cancel") }
 						@icons.Close()
 					</button>
 				</form>
@@ -35,7 +36,7 @@ templ DeleteExpenseModal(expenseID uint64) {
 						type="submit"
 						class="btn btn-success rounded-lg"
 					>
-						Delete
+						{ i18n.T(ctx, "delete") }
 						@icons.Delete()
 					</button>
 				</form>

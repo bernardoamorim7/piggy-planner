@@ -2,7 +2,6 @@ package middlewares
 
 import (
 	"fmt"
-	"log/slog"
 
 	"github.com/labstack/echo-contrib/session"
 	"github.com/labstack/echo/v4"
@@ -20,7 +19,7 @@ func GetSessionVars() echo.MiddlewareFunc {
 				if value, ok := sess.Values["userID"].(uint64); ok {
 					c.Set("userID", value)
 				} else {
-					slog.WarnContext(c.Request().Context(), "userID is not of type uint64 ("+fmt.Sprintf("%T", sess.Values["userID"])+")")
+					c.Logger().Debug(c.Request().Context(), "userID is not of type uint64 ("+fmt.Sprintf("%T", sess.Values["userID"])+")")
 				}
 			}
 
@@ -28,7 +27,7 @@ func GetSessionVars() echo.MiddlewareFunc {
 				if value, ok := sess.Values["name"].(string); ok {
 					c.Set("name", value)
 				} else {
-					slog.WarnContext(c.Request().Context(), "name is not of type string ("+fmt.Sprintf("%T", sess.Values["name"])+")")
+					c.Logger().Debug(c.Request().Context(), "name is not of type string ("+fmt.Sprintf("%T", sess.Values["name"])+")")
 				}
 			}
 
@@ -36,7 +35,7 @@ func GetSessionVars() echo.MiddlewareFunc {
 				if value, ok := sess.Values["email"].(string); ok {
 					c.Set("email", value)
 				} else {
-					slog.WarnContext(c.Request().Context(), "email is not of type string ("+fmt.Sprintf("%T", sess.Values["email"])+")")
+					c.Logger().Debug(c.Request().Context(), "email is not of type string ("+fmt.Sprintf("%T", sess.Values["email"])+")")
 				}
 			}
 
@@ -44,7 +43,7 @@ func GetSessionVars() echo.MiddlewareFunc {
 				if value, ok := sess.Values["avatar"].(string); ok {
 					c.Set("avatar", value)
 				} else {
-					slog.WarnContext(c.Request().Context(), "avatar is not of type string ("+fmt.Sprintf("%T", sess.Values["avatar"])+")")
+					c.Logger().Debug(c.Request().Context(), "avatar is not of type string ("+fmt.Sprintf("%T", sess.Values["avatar"])+")")
 				}
 			}
 
@@ -52,7 +51,7 @@ func GetSessionVars() echo.MiddlewareFunc {
 				if value, ok := sess.Values["is_admin"].(bool); ok {
 					c.Set("is_admin", value)
 				} else {
-					slog.WarnContext(c.Request().Context(), "is_admin is not of type bool ("+fmt.Sprintf("%T", sess.Values["is_admin"])+")")
+					c.Logger().Debug(c.Request().Context(), "is_admin is not of type bool ("+fmt.Sprintf("%T", sess.Values["is_admin"])+")")
 				}
 			}
 

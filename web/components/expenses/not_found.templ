@@ -1,7 +1,9 @@
 package expenses
 
+import "github.com/invopop/ctxi18n/i18n"
+
 templ NotFoundExpenses() {
 	<tr>
-		<td colspan="6" class="text-center text-neutral">No expenses found</td>
+		<td colspan="6" class="text-center text-neutral">{ i18n.T(ctx, "noExpensesFound") }</td>
 	</tr>
 }

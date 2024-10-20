@@ -7,10 +7,12 @@ import (
 	"piggy-planner/web"
 
 	"piggy-planner/internal/handlers"
+	locales "piggy-planner/internal/i18n"
 	"piggy-planner/internal/middlewares"
 
 	"github.com/a-h/templ"
 	"github.com/gorilla/sessions"
+	"github.com/invopop/ctxi18n"
 	_ "github.com/joho/godotenv/autoload"
 	"github.com/labstack/echo-contrib/session"
 	"github.com/labstack/echo/v4"
@@ -26,6 +28,12 @@ func (s *Server) RegisterRoutes() http.Handler {
 	e.Use(middlewares.GetSessionVars())
 	e.Use(middlewares.RequestLogger())
 	e.Use(middleware.Gzip())
+
+	// i18n
+	e.Use(middlewares.I18NMiddleware())
+	if err := ctxi18n.Load(locales.LocaleFS); err != nil {
+		e.Logger.Errorf("error loading locales: %v", err)
+	}
 
 	// Static assets
 	e.GET("/assets/*", echo.WrapHandler(fileServer))

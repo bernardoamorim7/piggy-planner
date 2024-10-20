@@ -5,6 +5,7 @@ go 1.22
 require (
 	github.com/a-h/templ v0.2.778
 	github.com/gorilla/sessions v1.3.0
+	github.com/invopop/ctxi18n v0.8.1
 	github.com/joho/godotenv v1.5.1
 	github.com/labstack/echo/v4 v4.12.0
 	github.com/mattn/go-sqlite3 v1.14.24
@@ -13,10 +14,12 @@ require (
 )
 
 require (
+	github.com/invopop/yaml v0.2.0 // indirect
 	github.com/mfridman/interpolate v0.0.2 // indirect
 	github.com/sethvargo/go-retry v0.3.0 // indirect
 	go.uber.org/multierr v1.11.0 // indirect
 	golang.org/x/sync v0.8.0 // indirect
+	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
 
 require (

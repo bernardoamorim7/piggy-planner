@@ -2,11 +2,12 @@ package expenses
 
 import (
 	"fmt"
+	"github.com/invopop/ctxi18n/i18n"
 	"piggy-planner/internal/models"
 )
 
 templ ExpenseTypesOptions(expensesTypes []models.ExpenseType) {
-	<option value="0" default disabled selected>Select Expense Type</option>
+	<option value="0" default disabled selected>{ i18n.T(ctx, "select") } { i18n.T(ctx, "expenseType") }</option>
 	for _, expenseType := range expensesTypes {
 		<option value={ fmt.Sprintf("%v", expenseType.ID) }>{ expenseType.Name }</option>
 	}

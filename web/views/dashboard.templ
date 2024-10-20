@@ -1,6 +1,7 @@
 package views
 
 import (
+	"github.com/invopop/ctxi18n/i18n"
 	"piggy-planner/web/icons"
 	"time"
 )
@@ -15,7 +16,7 @@ templ Dashboard() {
 				<div class="stat-figure text-primary">
 					@icons.AccountBalance()
 				</div>
-				<div class="stat-title">Balance</div>
+				<div class="stat-title">{ i18n.T(ctx, "balance") }</div>
 				<div class="stat-value text-primary" hx-get="/api/stats/balance" hx-trigger="load">00.00</div>
 			</div>
 		</div>
@@ -24,7 +25,7 @@ templ Dashboard() {
 				<div class="stat-figure text-primary">
 					@icons.Payments()
 				</div>
-				<div class="stat-title">Total Expenses</div>
+				<div class="stat-title">{ i18n.T(ctx, "totalExpenses") }</div>
 				<div class="stat-value text-primary" hx-get="/api/stats/total-expenses" hx-trigger="load"></div>
 			</div>
 		</div>
@@ -33,7 +34,7 @@ templ Dashboard() {
 				<div class="stat-figure text-primary">
 					@icons.Money()
 				</div>
-				<div class="stat-title">{ currentMonth }'s income</div>
+				<div class="stat-title">{ currentMonth }'s { i18n.T(ctx, "income") }</div>
 				<div class="stat-value text-primary" hx-get="/api/stats/current-month-incomes" hx-trigger="load"></div>
 			</div>
 		</div>
@@ -42,7 +43,7 @@ templ Dashboard() {
 				<div class="stat-figure text-primary">
 					@icons.Payments()
 				</div>
-				<div class="stat-title">{ currentMonth }'s expenses</div>
+				<div class="stat-title">{ currentMonth }'s { i18n.T(ctx, "expenses") }</div>
 				<div class="stat-value text-primary" hx-get="/api/stats/current-month-expenses" hx-trigger="load"></div>
 			</div>
 		</div>
@@ -50,12 +51,12 @@ templ Dashboard() {
 	<div class="my-4"></div>
 	<div class="text-primary grid lg:grid-cols-2 mt-4 grid-cols-1 gap-6">
 		<div class="card w-full p-6 bg-base-200 shadow-xl mt-6">
-			<div class="text-xl font-semibold ">Incomes</div>
+			<div class="text-xl font-semibold ">{ i18n.T(ctx, "incomes") }</div>
 			<div class="divider mt-2"></div>
 			<div class="h-full w-full pb-6 bg-base-200" hx-get="/api/stats/incomes-chart" hx-trigger="load"></div>
 		</div>
 		<div class="card w-full p-6 bg-base-200 shadow-xl mt-6">
-			<div class="text-xl font-semibold ">Expenses</div>
+			<div class="text-xl font-semibold ">{ i18n.T(ctx, "expenses") }</div>
 			<div class="divider mt-2"></div>
 			<div class="h-full w-full pb-6 bg-base-200" hx-get="/api/stats/expenses-chart" hx-trigger="load"></div>
 		</div>

@@ -1,13 +1,16 @@
 package incomes
 
-import "piggy-planner/web/icons"
+import (
+	"github.com/invopop/ctxi18n/i18n"
+	"piggy-planner/web/icons"
+)
 
 // Create Income Type Modal
 templ CreateIncomeTypeModal() {
 	<dialog id="createIncomeTypeModal" class="modal modal-bottom sm:modal-middle">
 		<div class="modal-box">
 			<h3 class="text-lg font-bold">
-				Add Income Type
+				{ i18n.T(ctx, "add") } { i18n.T(ctx, "incomeType") }
 			</h3>
 			<p class="py-4"></p>
 			<form
@@ -19,19 +22,19 @@ templ CreateIncomeTypeModal() {
 			>
 				<label class="input input-bordered flex items-center gap-2 rounded-lg">
 					@icons.Description()
-					<input type="text" class="grow" placeholder="Name" name="name"/>
+					<input type="text" class="grow" placeholder={ i18n.T(ctx, "name") } name="name"/>
 				</label>
 				<p class="text-center my-4 text-error h-4 max-w-64 break-all" id="err"></p>
 			</form>
 			<div class="modal-action">
 				<form method="dialog">
 					<button class="btn btn-error rounded-lg">
-						Cancel
+						{ i18n.T(ctx, "cancel") }
 						@icons.Close()
 					</button>
 				</form>
 				<button class="btn btn-success rounded-lg" type="submit" form="addIncomeTypeForm">
-					Add
+					{ i18n.T(ctx, "add") }
 					@icons.Add()
 				</button>
 			</div>

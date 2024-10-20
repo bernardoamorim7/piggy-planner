@@ -1,10 +1,13 @@
 package views
 
-import "piggy-planner/web/icons"
+import (
+	"github.com/invopop/ctxi18n/i18n"
+	"piggy-planner/web/icons"
+)
 
 templ Expenses() {
 	<main class="flex-1 overflow-y-auto pt-4 px-4" id="expenses">
-		<h1 class="text-xl font-semibold text-primary mb-2">Expenses</h1>
+		<h1 class="text-xl font-semibold text-primary mb-2">{ i18n.T(ctx, "expenses") }</h1>
 		<div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
 			<div class="join">
 				<div class="bg-primary join-item text-center rounded-lg px-4 flex flex-wrap flex-shrink items-center justify-center">
@@ -13,7 +16,7 @@ templ Expenses() {
 				<input
 					id="search"
 					type="search"
-					placeholder="Search expenses..."
+					placeholder={ i18n.T(ctx, "searchExpenses") }
 					class="input input-bordered w-full max-w-xs join-item rounded-lg"
 					name="search"
 					hx-post="/api/expenses/search"
@@ -35,7 +38,7 @@ templ Expenses() {
 					hx-on::after-request="document.getElementById('createExpenseTypeModal').showModal()"
 				>
 					@icons.Add()
-					Add Expense Type
+					{ i18n.T(ctx, "addExpenseType") }
 				</button>
 				<button
 					type="button"
@@ -46,7 +49,7 @@ templ Expenses() {
 					hx-on::after-request="document.getElementById('createExpenseModal').showModal()"
 				>
 					@icons.Add()
-					Add Expense
+					{ i18n.T(ctx, "addExpense") }
 				</button>
 			</div>
 		</div>
@@ -56,11 +59,11 @@ templ Expenses() {
 				<thead>
 					<tr>
 						<th>ID</th>
-						<th>Amount</th>
-						<th>Description</th>
-						<th>Type</th>
-						<th>Date</th>
-						<th>Actions</th>
+						<th>{ i18n.T(ctx, "amount") }</th>
+						<th>{ i18n.T(ctx, "description") }</th>
+						<th>{ i18n.T(ctx, "type") }</th>
+						<th>{ i18n.T(ctx, "date") }</th>
+						<th>{ i18n.T(ctx, "actions") }</th>
 					</tr>
 				</thead>
 				<tbody id="table-body" hx-get="/api/expenses" hx-trigger="load" hx-target="#table-body" hx-ext="response-targets" hx-target-404="#table-body"></tbody>

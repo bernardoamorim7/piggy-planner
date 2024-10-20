@@ -2,6 +2,7 @@ package incomes
 
 import (
 	"fmt"
+	"github.com/invopop/ctxi18n/i18n"
 	"piggy-planner/internal/models"
 	"piggy-planner/web/components/utils"
 	"piggy-planner/web/icons"
@@ -12,7 +13,7 @@ templ UpdateIncomeModal(income models.Income) {
 	<dialog id="updateIncomeModal" class="modal modal-bottom sm:modal-middle" @close="window.location.reload()">
 		<div class="modal-box">
 			<h3 class="text-lg font-bold">
-				Update Income
+				{ i18n.T(ctx, "update") } { i18n.T(ctx, "income") }
 			</h3>
 			<p class="py-4"></p>
 			<form
@@ -29,11 +30,11 @@ templ UpdateIncomeModal(income models.Income) {
 				<input type="hidden" name="oldDate" value={ fmt.Sprintf("%v", income.Date) }/>
 				<label class="input input-bordered flex items-center gap-2 rounded-lg">
 					@icons.Money()
-					<input type="number" step="0.01" min="0" class="grow" placeholder="Amount" name="amount" value={ fmt.Sprintf("%v", income.Amount) } required/>
+					<input type="number" step="0.01" min="0" class="grow" placeholder={ i18n.T(ctx, "amount") } name="amount" value={ fmt.Sprintf("%v", income.Amount) } required/>
 				</label>
 				<label class="input input-bordered flex items-center gap-2 rounded-lg">
 					@icons.Description()
-					<input type="text" class="grow" placeholder="Description" name="description" value={ income.Description } required/>
+					<input type="text" class="grow" placeholder={ i18n.T(ctx, "description") } name="description" value={ income.Description } required/>
 				</label>
 				<label class="input input-bordered flex items-center gap-2 rounded-lg" hx-get="/api/incomes/types" hx-trigger="load" hx-target="#incomeType">
 					@icons.Receipt()
@@ -48,12 +49,12 @@ templ UpdateIncomeModal(income models.Income) {
 			<div class="modal-action">
 				<form method="dialog">
 					<button class="btn btn-error rounded-lg">
-						Cancel
+						{ i18n.T(ctx, "cancel") }
 						@icons.Close()
 					</button>
 				</form>
 				<button class="btn btn-success rounded-lg" type="submit" form="updateIncomeForm">
-					Update
+					{ i18n.T(ctx, "update") }
 					@icons.Upgrade()
 				</button>
 			</div>

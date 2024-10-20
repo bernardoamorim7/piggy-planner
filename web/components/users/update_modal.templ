@@ -2,6 +2,7 @@ package components
 
 import (
 	"fmt"
+	"github.com/invopop/ctxi18n/i18n"
 	"piggy-planner/internal/models"
 	"piggy-planner/web/icons"
 )
@@ -10,7 +11,7 @@ templ UpdateUserModal(user models.User) {
 	<dialog id="updateUserModal" class="modal modal-bottom sm:modal-middle" @close="window.location.reload()">
 		<div class="modal-box">
 			<h3 class="text-lg font-bold">
-				Update User
+				{ i18n.T(ctx, "update") } { i18n.T(ctx, "user") }
 			</h3>
 			<p class="py-4"></p>
 			<form
@@ -30,7 +31,7 @@ templ UpdateUserModal(user models.User) {
 				}
 				<label class="input input-bordered flex items-center gap-2 rounded-lg">
 					@icons.Person()
-					<input type="text" class="grow" placeholder="Name" name="name" value={ user.Name } required/>
+					<input type="text" class="grow" placeholder={ i18n.T(ctx, "name") } name="name" value={ user.Name } required/>
 				</label>
 				<label class="input input-bordered flex items-center gap-2 rounded-lg">
 					@icons.Mail()
@@ -38,11 +39,11 @@ templ UpdateUserModal(user models.User) {
 				</label>
 				<label class="input input-bordered flex items-center gap-2 rounded-lg">
 					@icons.Password()
-					<input type="password" class="grow" placeholder="New Password" name="password" value=""/>
+					<input type="password" class="grow" placeholder={ i18n.T(ctx, "newPassword") } name="password" value=""/>
 				</label>
 				<div class="form-control">
 					<label class="label cursor-pointer">
-						<span class="label-text">Admin</span>
+						<span class="label-text">{ i18n.T(ctx, "admin") }</span>
 						<input id="isAdminToggle" type="checkbox" class="toggle" name="isAdmin" value={ fmt.Sprintf("%v", user.IsAdmin) }/>
 					</label>
 				</div>
@@ -51,12 +52,12 @@ templ UpdateUserModal(user models.User) {
 			<div class="modal-action">
 				<form method="dialog">
 					<button class="btn btn-error rounded-lg">
-						Cancel
+						{ i18n.T(ctx, "cancel") }
 						@icons.Close()
 					</button>
 				</form>
 				<button class="btn btn-success rounded-lg" type="submit" form="updateUserForm">
-					Update
+					{ i18n.T(ctx, "update") }
 					@icons.Upgrade()
 				</button>
 			</div>

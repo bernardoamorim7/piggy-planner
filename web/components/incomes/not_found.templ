@@ -1,7 +1,9 @@
 package incomes
 
+import "github.com/invopop/ctxi18n/i18n"
+
 templ NotFoundIncomes() {
 	<tr>
-		<td colspan="6" class="text-center text-neutral">No incomes found</td>
+		<td colspan="6" class="text-center text-neutral">{ i18n.T(ctx, "noIncomesFound") }</td>
 	</tr>
 }
