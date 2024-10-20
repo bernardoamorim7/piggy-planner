@@ -9,6 +9,9 @@ jobs:
     runs-on: ubuntu-latest
     env:
       flags: ""
+    permissions: 
+      contents: write
+      actions: write
     steps:
       # re-enable auto-snapshot from goreleaser-action@v3
       # (https://github.com/goreleaser/goreleaser-action-v4-auto-snapshot-example)
