@@ -39,7 +39,7 @@ func (s *Server) RegisterRoutes() http.Handler {
 	isProduction := os.Getenv("ENV") == "production"
 	sessionStore.Options = &sessions.Options{
 		Secure:   isProduction,
-		HttpOnly: true,
+		HttpOnly: isProduction,
 	}
 	e.Use(session.Middleware(sessionStore))
 
