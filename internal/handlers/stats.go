@@ -180,24 +180,22 @@ func IncomesChartHandler(c echo.Context) error {
 
 	// Prepare labels and values for the chart
 	var labels []string
-	var values []float64
 
-	for label, amounts := range incomeMap {
+	for label := range incomeMap {
 		labels = append(labels, label)
-		// Sum the amounts for each income type
-		var total float64
-		for _, amount := range amounts {
-			total += amount
-		}
-		values = append(values, total)
 	}
 
 	// Sort the labels by alphabetical order so it's always the same order
 	// when the chart is rendered
 	sort.Strings(labels)
-	sortedValues := make([]float64, len(values))
+	sortedValues := make([]float64, len(labels))
 	for i, label := range labels {
-		sortedValues[i] = incomeMap[label][0]
+		// Sum the amounts for each expense type
+		var total float64
+		for _, amount := range incomeMap[label] {
+			total += amount
+		}
+		sortedValues[i] = total
 	}
 
 	// Convert labels and values to JSON format for the chart
@@ -223,8 +221,8 @@ func IncomesChartHandler(c echo.Context) error {
                         'rgba(153, 102, 255, 0.2)',
                         'rgba(255, 159, 64, 0.2)',
 						'rgba(140, 160, 50, 0.2)',
-						'rgba(188, 143, 143, 0.2)',,
-						'rgba(0, 100, 0, 1)',
+						'rgba(188, 143, 143, 0.2)',
+						'rgba(160, 160, 160, 0.2)'
                     ],
                     borderColor: [
                         'rgba(255, 99, 132, 1)',
@@ -234,8 +232,8 @@ func IncomesChartHandler(c echo.Context) error {
                         'rgba(153, 102, 255, 1)',
                         'rgba(255, 159, 64, 1)',
       					'rgba(140, 180, 50, 1)',
-						'rgba(188, 143, 143, 1)',,
-						'rgba(0, 100, 0, 1)',
+						'rgba(188, 143, 143, 1)',
+						'rgba(160, 160, 160, 1)'
                     ],
                     borderWidth: 1
                 }]
@@ -279,24 +277,22 @@ func ExpensesChartHandler(c echo.Context) error {
 
 	// Prepare labels and values for the chart
 	var labels []string
-	var values []float64
 
-	for label, amounts := range expenseMap {
+	for label := range expenseMap {
 		labels = append(labels, label)
-		// Sum the amounts for each expense type
-		var total float64
-		for _, amount := range amounts {
-			total += amount
-		}
-		values = append(values, total)
 	}
 
 	// Sort the labels by alphabetical order so it's always the same order
 	// when the chart is rendered
 	sort.Strings(labels)
-	sortedValues := make([]float64, len(values))
+	sortedValues := make([]float64, len(labels))
 	for i, label := range labels {
-		sortedValues[i] = expenseMap[label][0]
+		// Sum the amounts for each expense type
+		var total float64
+		for _, amount := range expenseMap[label] {
+			total += amount
+		}
+		sortedValues[i] = total
 	}
 
 	// Convert labels and values to JSON format for the chart
@@ -322,8 +318,8 @@ func ExpensesChartHandler(c echo.Context) error {
                         'rgba(153, 102, 255, 0.2)',
                         'rgba(255, 159, 64, 0.2)',
 						'rgba(140, 160, 50, 0.2)',
-						'rgba(188, 143, 143, 0.2)',,
-						'rgba(0, 100, 0, 1)',
+						'rgba(188, 143, 143, 0.2)',
+						'rgba(160, 160, 160, 0.2)'
                     ],
                     borderColor: [
                         'rgba(255, 99, 132, 1)',
@@ -333,8 +329,8 @@ func ExpensesChartHandler(c echo.Context) error {
                         'rgba(153, 102, 255, 1)',
                         'rgba(255, 159, 64, 1)',
       					'rgba(140, 180, 50, 1)',
-						'rgba(188, 143, 143, 1)',,
-						'rgba(0, 100, 0, 1)',
+						'rgba(188, 143, 143, 1)',
+						'rgba(160, 160, 160, 1)'
                     ],
                     borderWidth: 1
                 }]
