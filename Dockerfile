@@ -19,15 +19,18 @@ RUN chmod +x piggy-planner
 # Stage 2: Create a minimal image with the Go binary
 FROM scratch
 
+# Set the working directory
+WORKDIR /app
+
 # Add necessary certificates for HTTPS connections
 COPY --from=alpine:latest /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
 
 # Copy the Go binary from the downloader stage
-COPY --from=downloader /app/piggy-planner /piggy-planner
+COPY --from=downloader /app/piggy-planner /app/piggy-planner
 
 # Copy the local file into the container
 # Uncomment the line below if you want to copy the database file into the container
-# COPY ./piggy_planner.db /
+# COPY ./piggy_planner.db /app/piggy_planner.db
 
 # Set the entrypoint to the Go binary
-ENTRYPOINT ["/piggy-planner"]
+ENTRYPOINT ["/app/piggy-planner"]
