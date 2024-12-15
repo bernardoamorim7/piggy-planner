@@ -10,7 +10,7 @@ templ Login() {
 	<html lang="en" data-theme="nord">
 		<head>
 			<meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/>
-			<title>Piggy Planner - Login</title>
+			<title>Piggy Planner - { i18n.T(ctx, "login") }</title>
 			<meta name="keywords" content="Piggy Planner Login"/>
 			<meta name="description" content="Piggy Planner Login"/>
 			<meta name="author" content="Piggy Planner"/>
@@ -43,7 +43,7 @@ templ Login() {
 								</figure>
 								<input class="input input-bordered shadow-lg" type="password" name="password" id="password" placeholder={ i18n.T(ctx, "password") } required/>
 							</div>
-							<button class="btn btn-primary rounded-lg mt-4" type="submit" name="login" id="login">Login</button>
+							<button class="btn btn-primary rounded-lg mt-4" type="submit" name="login" id="login">{ i18n.T(ctx, "login") }</button>
 							<p class="text-center my-4 text-error h-4 max-w-64 break-all" id="err"></p>
 						</form>
 					</div>
@@ -52,21 +52,5 @@ templ Login() {
 				</div>
 			</main>
 		</body>
-		<script>
-		setInterval(function() {
-			var x = Math.random() * window.innerWidth;
-			var y = Math.random() * window.innerHeight;
-			var piggy = document.createElement('img');
-			piggy.src = '/assets/imgs/favicon.png';
-			piggy.style.position = 'fixed';
-			piggy.style.left = x + 'px';
-			piggy.style.top = y + 'px';
-			piggy.className = 'piggy z-[-1] invert';
-			document.body.appendChild(piggy);
-			setTimeout(function() {
-				piggy.remove();
-			}, 5000);
-		}, 500);
-		</script>
 	</html>
 }
