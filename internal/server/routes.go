@@ -175,6 +175,8 @@ func (s *Server) RegisterRoutes() http.Handler {
 	// Charts
 	api.GET("/stats/incomes-chart", handlers.IncomesChartHandler, middlewares.Protected())
 	api.GET("/stats/expenses-chart", handlers.ExpensesChartHandler, middlewares.Protected())
+	api.GET("/stats/incomes-month-chart", handlers.IncomesPerMonthChartHandler, middlewares.Protected())
+	api.GET("/stats/expenses-month-chart", handlers.ExpensesPerMonthChartHandler, middlewares.Protected())
 
 	// Admin
 	// Security

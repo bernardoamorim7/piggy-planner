@@ -48,17 +48,27 @@ templ Dashboard() {
 			</div>
 		</div>
 	</div>
-	<div class="my-4"></div>
+	<div class="my-8"></div>
 	<div class="text-primary grid lg:grid-cols-2 mt-4 grid-cols-1 gap-6">
-		<div class="card w-full p-6 bg-base-200 shadow-xl mt-6">
+		<div class="card w-full p-6 bg-base-200 shadow-xl">
 			<div class="text-xl font-semibold ">{ i18n.T(ctx, "incomes") }</div>
 			<div class="divider mt-2"></div>
 			<div class="h-full w-full pb-6 bg-base-200" hx-get="/api/stats/incomes-chart" hx-trigger="load"></div>
 		</div>
-		<div class="card w-full p-6 bg-base-200 shadow-xl mt-6">
+		<div class="card w-full p-6 bg-base-200 shadow-xl">
 			<div class="text-xl font-semibold ">{ i18n.T(ctx, "expenses") }</div>
 			<div class="divider mt-2"></div>
 			<div class="h-full w-full pb-6 bg-base-200" hx-get="/api/stats/expenses-chart" hx-trigger="load"></div>
+		</div>
+		<div class="card w-full p-6 bg-base-200 shadow-xl">
+			<div class="text-xl font-semibold ">{ i18n.T(ctx, "incomesPerMonth") }</div>
+			<div class="divider mt-2"></div>
+			<div class="h-full w-full pb-6 bg-base-200" hx-get="/api/stats/incomes-month-chart" hx-trigger="load"></div>
+		</div>
+		<div class="card w-full p-6 bg-base-200 shadow-xl">
+			<div class="text-xl font-semibold ">{ i18n.T(ctx, "expensesPerMonth") }</div>
+			<div class="divider mt-2"></div>
+			<div class="h-full w-full pb-6 bg-base-200" hx-get="/api/stats/expenses-month-chart" hx-trigger="load"></div>
 		</div>
 		// <div class="card w-full p-6 bg-base-200 shadow-xl mt-6">
 		// 	<div class="text-xl font-semibold ">Objectives</div>

@@ -74,6 +74,8 @@
         "pageNotFound": "Page not found",
         "pageDoesNotExist": "The page you are looking for does not exist.",
         "goHome": "Go home",
-        "select": "Select"
+        "select": "Select",
+        "incomesPerMonth": "Incomes per Month",
+        "expensesPerMonth": "Expenses per Month"
     }
 }

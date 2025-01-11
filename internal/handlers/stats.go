@@ -222,7 +222,8 @@ func IncomesChartHandler(c echo.Context) error {
                         'rgba(255, 159, 64, 0.2)',
 						'rgba(140, 160, 50, 0.2)',
 						'rgba(188, 143, 143, 0.2)',
-						'rgba(160, 160, 160, 0.2)'
+						'rgba(160, 160, 160, 0.2)',
+						'rgba(87, 50, 29, 0.2)'
                     ],
                     borderColor: [
                         'rgba(255, 99, 132, 1)',
@@ -233,7 +234,8 @@ func IncomesChartHandler(c echo.Context) error {
                         'rgba(255, 159, 64, 1)',
       					'rgba(140, 180, 50, 1)',
 						'rgba(188, 143, 143, 1)',
-						'rgba(160, 160, 160, 1)'
+						'rgba(160, 160, 160, 1)',
+						'rgba(87, 50, 29, 1)'
                     ],
                     borderWidth: 1
                 }]
@@ -319,7 +321,8 @@ func ExpensesChartHandler(c echo.Context) error {
                         'rgba(255, 159, 64, 0.2)',
 						'rgba(140, 160, 50, 0.2)',
 						'rgba(188, 143, 143, 0.2)',
-						'rgba(160, 160, 160, 0.2)'
+						'rgba(160, 160, 160, 0.2)',
+						'rgba(87, 50, 29, 0.2)'
                     ],
                     borderColor: [
                         'rgba(255, 99, 132, 1)',
@@ -330,7 +333,8 @@ func ExpensesChartHandler(c echo.Context) error {
                         'rgba(255, 159, 64, 1)',
       					'rgba(140, 180, 50, 1)',
 						'rgba(188, 143, 143, 1)',
-						'rgba(160, 160, 160, 1)'
+						'rgba(160, 160, 160, 1)',
+						'rgba(87, 50, 29, 1)'
                     ],
                     borderWidth: 1
                 }]
@@ -346,6 +350,152 @@ func ExpensesChartHandler(c echo.Context) error {
         });
     </script>
 `, string(labelsJSON), string(valuesJSON))
+
+	return c.HTML(http.StatusOK, chart)
+}
+
+func IncomesPerMonthChartHandler(c echo.Context) error {
+	userID := c.Get("userID").(uint64)
+
+	db, err := database.New()
+	if err != nil {
+		return err
+	}
+
+	incomesService := services.NewIncomesService(db)
+
+	incomes, err := incomesService.GetAll(userID)
+	if err != nil {
+		return c.NoContent(http.StatusInternalServerError)
+	}
+
+	// Map to hold monthly totals
+	monthlyIncomes := make(map[string]float64)
+
+	// Group incomes by month and sum amounts
+	for _, income := range incomes {
+		monthKey := income.Date.Format("2006-01") // YYYY-MM format
+		monthlyIncomes[monthKey] += income.Amount
+	}
+
+	// Get sorted months
+	var months []string
+	for month := range monthlyIncomes {
+		months = append(months, month)
+	}
+	sort.Strings(months)
+
+	// Create sorted values array
+	values := make([]float64, len(months))
+	for i, month := range months {
+		values[i] = monthlyIncomes[month]
+	}
+
+	// Get only the last 12 months
+	if len(months) > 12 {
+		months = months[len(months)-12:]
+		values = values[len(values)-12:]
+	}
+
+	// Convert to JSON for the chart
+	labelsJSON, _ := json.Marshal(months)
+	valuesJSON, _ := json.Marshal(values)
+
+	chart := fmt.Sprintf(`
+        <canvas id="incomesPerMonthChart" width="400" height="400"></canvas>
+    	<script>
+        	var ctx = document.getElementById('incomesPerMonthChart').getContext('2d');
+        	var myChart = new Chart(ctx, {
+        		"type": "line",
+        		"data": {
+					"labels": %s,
+					"datasets": [{
+						"label": "Monthly Income",
+						"data": %s,
+						"fill": false,
+						"borderColor": 'rgba(140, 180, 50, 1)',
+						"tension": 0.1
+					}]
+				},
+				options: {
+					responsive: true
+				}
+			});
+		</script>
+    `, labelsJSON, valuesJSON)
+
+	return c.HTML(http.StatusOK, chart)
+}
+
+func ExpensesPerMonthChartHandler(c echo.Context) error {
+	userID := c.Get("userID").(uint64)
+
+	db, err := database.New()
+	if err != nil {
+		return err
+	}
+
+	expensesService := services.NewExpensesService(db)
+
+	expenses, err := expensesService.GetAll(userID)
+	if err != nil {
+		return c.NoContent(http.StatusInternalServerError)
+	}
+
+	// Map to hold monthly totals
+	monthlyExpenses := make(map[string]float64)
+
+	// Group expenses by month and sum amounts
+	for _, expense := range expenses {
+		monthKey := expense.Date.Format("2006-01") // YYYY-MM format
+		monthlyExpenses[monthKey] += expense.Amount
+	}
+
+	// Get sorted months
+	var months []string
+	for month := range monthlyExpenses {
+		months = append(months, month)
+	}
+	sort.Strings(months)
+
+	// Create sorted values array
+	values := make([]float64, len(months))
+	for i, month := range months {
+		values[i] = monthlyExpenses[month]
+	}
+
+	// Get only the last 12 months
+	if len(months) > 12 {
+		months = months[len(months)-12:]
+		values = values[len(values)-12:]
+	}
+
+	// Convert to JSON for the chart
+	labelsJSON, _ := json.Marshal(months)
+	valuesJSON, _ := json.Marshal(values)
+
+	chart := fmt.Sprintf(`
+        <canvas id="expensesPerMonthChart" width="400" height="400"></canvas>
+    	<script>
+        	var ctx = document.getElementById('expensesPerMonthChart').getContext('2d');
+        	var myChart = new Chart(ctx, {
+        		"type": "line",
+        		"data": {
+					"labels": %s,
+					"datasets": [{
+						"label": "Monthly Expenses",
+						"data": %s,
+						"fill": false,
+						"borderColor": 'rgba(255, 99, 132, 1)',
+						"tension": 0.1
+					}]
+				},
+				options: {
+					responsive: true
+				}
+			});
+		</script>
+    `, labelsJSON, valuesJSON)
 
 	return c.HTML(http.StatusOK, chart)
 }

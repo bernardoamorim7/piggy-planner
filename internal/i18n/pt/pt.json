@@ -74,6 +74,8 @@
         "pageNotFound": "Página não encontrada",
         "pageDoesNotExist": "A página que procura não existe.",
         "goHome": "Ir para a página inicial",
-        "select": "Selecionar"
+        "select": "Selecionar",
+        "incomesPerMonth": "Rendimentos por mês",
+        "expensesPerMonth": "Despesas por mês"
     }
 }
