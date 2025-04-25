@@ -14,8 +14,8 @@ The application will create a SQLite database in the current working directory c
 
 To build the application from source, you will need:
 
-- Go 1.22 or later
-- Node.js 20 or later
+- Go 1.24 or later
+- Node.js 22 or later
 - Templ
 
 First, clone the repository:
@@ -45,7 +45,7 @@ make build
 or build the application manually, generating the templ files, the CSS file and building the Go application:
 
 ```bash
-templ generate && npx tailwindcss -i ./web/assets/css/input.css -o ./web/assets/css/tailwind.css --minify && go build -o piggy-planner main.go 
+templ generate && npx @tailwindcss/cli -i ./web/assets/css/input.css -o ./web/assets/css/tailwind.css --minify && go build -o piggy-planner main.go 
 ```
 
 ## Contributing

@@ -10,14 +10,14 @@ templ Security() {
 		<h1 class="text-xl font-semibold text-primary mb-2">{ i18n.T(ctx, "securityLogs") }</h1>
 		<div class="grid grid-cols-2 gap-4 mb-4">
 			<div class="join">
-				<div class="bg-primary join-item text-center rounded-lg px-4 flex flex-wrap flex-shrink items-center justify-center">
+				<div class="bg-primary join-item text-center rounded-l-lg px-4 flex flex-wrap flex-shrink items-center justify-center">
 					@icons.Search()
 				</div>
 				<input
 					id="search"
 					type="search"
 					placeholder={ i18n.T(ctx, "searchSecurity") }
-					class="input input-bordered w-full max-w-xs join-item rounded-lg"
+					class="input input-bordered w-full max-w-xs join-item rounded-r-lg"
 					name="search"
 					hx-post="/api/security/search"
 					hx-vals='{"userName": this.value}'

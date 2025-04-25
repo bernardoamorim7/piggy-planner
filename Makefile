@@ -8,19 +8,19 @@ all: build
 build:
 	@echo "Building..."
 	@templ generate
-	@npx tailwindcss -i ./web/assets/css/input.css -o ./web/assets/css/tailwind.css --minify
+	@npx @tailwindcss/cli -i ./web/assets/css/input.css -o ./web/assets/css/tailwind.css --minify
 	@go build -o piggy-planner main.go 
 
 build-release:
 	@echo "Building..."
 	@templ generate
-	@npx tailwindcss -i ./web/assets/css/input.css -o ./web/assets/css/tailwind.css --minify
+	@npx @tailwindcss/cli -i ./web/assets/css/input.css -o ./web/assets/css/tailwind.css --minify
 	@go build -ldflags="-s -w" -o piggy-planner main.go 
 
 build-release-raspberry:
 	@echo "Building..."
 	@templ generate
-	@npx tailwindcss -i ./web/assets/css/input.css -o ./web/assets/css/tailwind.css --minify
+	@npx @tailwindcss/cli -i ./web/assets/css/input.css -o ./web/assets/css/tailwind.css --minify
 	@GOOS=linux GOARCH=arm64 go build -ldflags="-s -w" -o piggy-planner-raspberry main.go 
 
 # Run the application

@@ -8,7 +8,7 @@ RUN apk add --no-cache wget unzip
 WORKDIR /app
 
 # Download the zip file from GitHub releases
-ADD https://github.com/bernardoamorim7/piggy-planner/releases/download/v0.2.0/piggy-planner_0.2.0_linux_arm64.zip /app/piggy-planner.zip
+ADD https://github.com/bernardoamorim7/piggy-planner/releases/download/v0.3.0/piggy-planner_0.2.0_linux_arm64.zip /app/piggy-planner.zip
 
 # Unzip the binary
 RUN unzip piggy-planner.zip
